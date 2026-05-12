@@ -1,361 +1,330 @@
-```html
-<!-- ========================= -->
-<!-- SAVE AS: index.html -->
-<!-- ========================= -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Please Don’t Stop Telling Me Things</title>
-
+  <title>Please Don't Stop Telling Me Things</title>
   <link rel="stylesheet" href="style.css">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<div class="stars"></div>
+<div class="bg-canvas">
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+  <div class="aurora aurora-3"></div>
+  <canvas id="stars-canvas"></canvas>
+</div>
 
+<!-- HERO -->
 <section class="hero">
-
-  <div class="hero-content">
-
-    <h1>Please Don’t Stop Telling Me Things</h1>
-
-    <p>
-      For the girl who changed everything since October 2025
-    </p>
-
-    <button onclick="scrollToTimeline()">
-      Begin Our Story
+  <div class="hero-inner">
+    <div class="hero-date">Since October 2025</div>
+    <h1 class="hero-title">
+      <span>Please Don't Stop</span>
+      <span class="italic">Telling Me Things</span>
+    </h1>
+    <p class="hero-sub">For the girl who changed everything</p>
+    <button class="cta-btn" onclick="scrollToTimeline()">
+      <span>Begin Our Story</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-
   </div>
-
+  <div class="scroll-hint">scroll</div>
 </section>
 
-<section class="intro fade">
-
-  <h2>Before Anything...</h2>
-
-  <p>
-    Yesterday night you were trying to explain your fear,
-    your pressure,
-    your anxiety regarding your plant project.
-  </p>
-
-  <p>
-    Instead of understanding that fear,
-    I made you feel misunderstood.
-  </p>
-
-  <p>
-    This website is not to justify what I said.
-    This is to remind you that through every fight,
-    every late night,
-    every project stress,
-    every achievement,
-    every breakdown,
-    every smile...
-    it has always been us.
-  </p>
-
-</section>
-
-<section id="timeline">
-
-  <h2 class="timeline-title fade">Our Story</h2>
-
-  <div class="card fade">
-    <h3>October 2025</h3>
-
-    <p>
-      The first “Hi” from you never felt normal.
-      Every message from you felt electrifying.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>Diwali Hunt Game</h3>
-
-    <p>
-      The first game we played virtually.
-      You gave me 10 chances to guess your address.
-      I came close but still failed.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>Oct - Nov 2025</h3>
-
-    <p>
-      The girl who never stayed awake for anyone
-      stayed awake entire nights talking to me.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>The MEDHA Night</h3>
-
-    <p>
-      The night you slowly started opening up to me.
-      A trust I never want to break.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>The Liking Phase</h3>
-
-    <p>
-      “I like you”
-      slowly becoming
-      “I love you”.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>4th December 2025</h3>
-
-    <p>
-      The first proper “I love you”.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>12th January 2026</h3>
-
-    <p>
-      Our first room meet.
-      Our first kiss.
-    </p>
-
-    <img src="Image5.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>24th January 2026</h3>
-
-    <p>
-      My baby wins ICRTB conference.
-      Proud of you beyond words.
-    </p>
-
-    <img src="Image6.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>26th January 2026</h3>
-
-    <p>
-      Our first date at Crazy Cheesy Café.
-    </p>
-
-    <div class="gallery">
-      <img src="Image7.jpg">
-      <img src="Image8.jpg">
-      <img src="Image9.jpg">
+<!-- INTRO -->
+<section class="intro reveal">
+  <div class="section-inner">
+    <div class="label">Before Anything</div>
+    <h2>A moment I wish<br><em>I handled differently.</em></h2>
+    <div class="prose-block">
+      <p>Yesterday night you were trying to explain your fear, your pressure, your anxiety regarding your plant project.</p>
+      <p>Instead of understanding that fear, I made you feel misunderstood.</p>
+      <p>This website is not to justify what I said. This is to remind you that through every fight, every late night, every project stress, every achievement, every breakdown, every smile — it has always been us.</p>
     </div>
   </div>
-
-  <div class="card fade">
-    <h3>31st January 2026</h3>
-
-    <p>
-      Our first project together.
-    </p>
-
-    <img src="Image10.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>5th February 2026</h3>
-
-    <p>
-      Our first book chapter together.
-    </p>
-
-    <img src="Image11.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>13th February 2026</h3>
-
-    <p>
-      You wore a special dress for me
-      and waited for me despite my late bus.
-    </p>
-
-    <img src="Image12.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>20th February 2026</h3>
-
-    <p>
-      First testing day together.
-    </p>
-
-    <img src="Image13.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>Another Book Chapter</h3>
-
-    <img src="Image14.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>25th February 2026</h3>
-
-    <p>
-      The handmade birthday gift you made for me.
-    </p>
-
-    <img src="Image15.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>8th March 2026</h3>
-
-    <p>
-      My little sea girl.
-    </p>
-
-    <img src="Image16.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>2nd April 2026</h3>
-
-    <p>
-      The poha date.
-      The first time I cooked for you.
-    </p>
-
-    <img src="Image17.jpg">
-  </div>
-
-  <div class="card fade">
-    <h3>15th April 2026</h3>
-
-    <p>
-      Our Mumbai trip.
-      The train conversation changed me forever.
-    </p>
-
-    <img src="Image18.jpg">
-  </div>
-
 </section>
 
-<section class="apology fade">
-
-  <h2>The Part I Need You To Read Slowly</h2>
-
-  <p>
-    Yesterday night,
-    you were not trying to show me down.
-    You were scared.
-    You were anxious.
-    You were overwhelmed about your plant project.
-  </p>
-
-  <p>
-    And instead of understanding your fear,
-    I made it about myself.
-  </p>
-
-  <p>
-    You specifically spoke about PLANT projects.
-    About the pressure.
-    About how difficult and time consuming they are.
-  </p>
-
-  <p>
-    But I twisted your words in anger and ego.
-  </p>
-
-  <p>
-    None of what I said was true.
-    Not even one bit.
-  </p>
-
-  <p>
-    It was my frustration,
-    my jealousy,
-    my ego clash,
-    and my anger speaking.
-  </p>
-
-  <p>
-    Not my heart.
-  </p>
-
-  <p>
-    I don’t want you to think 100 times before telling me things.
-    Especially your fears.
-    Especially your project stress.
-  </p>
-
-  <p>
-    I WANT to hear them.
-    I WANT to understand them.
-    I WANT to be your safe place.
-  </p>
-
-  <p class="final-text">
-    I am sorry, GK.
-    Truly.
-  </p>
-
-</section>
-
-<section class="forgive fade">
-
-  <h2>Will You Please Forgive Me?</h2>
-
-  <p>No hurry. I’ll wait for your reply.</p>
-
-  <div class="buttons">
-
-    <button class="yes" onclick="showFinal()">
-      Yes
-    </button>
-
-    <button class="no" onclick="moveNo(this)">
-      No
-    </button>
-
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="timeline-header reveal">
+    <div class="label">Chapter by Chapter</div>
+    <h2>Our Story</h2>
   </div>
 
+  <div class="timeline-track">
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">October 2025</div>
+          <p>The first "Hi" from you never felt normal. Every message from you felt electrifying.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">Diwali Hunt Game</div>
+          <p>The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">Oct – Nov 2025</div>
+          <p>The girl who never stayed awake for anyone stayed awake entire nights talking to me.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">The MEDHA Night</div>
+          <p>The night you slowly started opening up to me. A trust I never want to break.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">The Liking Phase</div>
+          <p class="quote-text">"I like you"<br>slowly becoming<br>"I love you".</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">4th December 2025</div>
+          <p>The first proper "I love you".</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">12th January 2026</div>
+          <p>Our first room meet. Our first kiss.</p>
+          <div class="img-wrap single">
+            <img src="Image5.jpg" alt="12th January 2026" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">24th January 2026</div>
+          <p>My baby wins ICRTB conference. Proud of you beyond words.</p>
+          <div class="img-wrap single">
+            <img src="Image6.jpg" alt="ICRTB Conference" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">26th January 2026</div>
+          <p>Our first date at Crazy Cheesy Café.</p>
+          <div class="img-wrap gallery">
+            <img src="Image7.jpg" alt="Crazy Cheesy Café" loading="lazy">
+            <img src="Image8.jpg" alt="Crazy Cheesy Café" loading="lazy">
+            <img src="Image9.jpg" alt="Crazy Cheesy Café" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">31st January 2026</div>
+          <p>Our first project together.</p>
+          <div class="img-wrap single">
+            <img src="Image10.jpg" alt="First project" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">5th February 2026</div>
+          <p>Our first book chapter together.</p>
+          <div class="img-wrap single">
+            <img src="Image11.jpg" alt="Book chapter" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">13th February 2026</div>
+          <p>You wore a special dress for me and waited for me despite my late bus.</p>
+          <div class="img-wrap single">
+            <img src="Image12.jpg" alt="13th Feb" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">20th February 2026</div>
+          <p>First testing day together.</p>
+          <div class="img-wrap single">
+            <img src="Image13.jpg" alt="Testing day" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">Another Book Chapter</div>
+          <div class="img-wrap single">
+            <img src="Image14.jpg" alt="Book chapter" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">25th February 2026</div>
+          <p>The handmade birthday gift you made for me.</p>
+          <div class="img-wrap single">
+            <img src="Image15.jpg" alt="Birthday gift" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">8th March 2026</div>
+          <p>My little sea girl.</p>
+          <div class="img-wrap single">
+            <img src="Image16.jpg" alt="Sea girl" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">2nd April 2026</div>
+          <p>The poha date. The first time I cooked for you.</p>
+          <div class="img-wrap single">
+            <img src="Image17.jpg" alt="Poha date" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-card reveal has-image">
+      <div class="t-card-inner">
+        <div class="t-dot"></div>
+        <div class="t-content">
+          <div class="t-date">15th April 2026</div>
+          <p>Our Mumbai trip. The train conversation changed me forever.</p>
+          <div class="img-wrap single">
+            <img src="Image18.jpg" alt="Mumbai trip" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
+<!-- APOLOGY -->
+<section class="apology reveal">
+  <div class="section-inner">
+    <div class="label">Read This Slowly</div>
+    <h2>The Part That<br><em>Matters Most</em></h2>
+    <div class="apology-body">
+      <p>Yesterday night, you were not trying to show me down. You were scared. You were anxious. You were overwhelmed about your plant project.</p>
+      <p>And instead of understanding your fear, I made it about myself.</p>
+      <p>You specifically spoke about PLANT projects. About the pressure. About how difficult and time consuming they are.</p>
+      <p>But I twisted your words in anger and ego.</p>
+      <div class="divider-line"></div>
+      <p>None of what I said was true. Not even one bit.</p>
+      <p>It was my frustration, my jealousy, my ego clash, and my anger speaking — not my heart.</p>
+      <div class="divider-line"></div>
+      <p>I don't want you to think 100 times before telling me things. Especially your fears. Especially your project stress.</p>
+      <p class="emphasis">I WANT to hear them.<br>I WANT to understand them.<br>I WANT to be your safe place.</p>
+      <p class="final-apology">I am sorry, GK.<br>Truly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FORGIVE -->
+<section class="forgive reveal">
+  <div class="section-inner">
+    <div class="label">One Question</div>
+    <h2>Will You Please<br><em>Forgive Me?</em></h2>
+    <p class="forgive-sub">No hurry. I'll wait for your reply.</p>
+    <div class="forgive-btns">
+      <button class="btn-yes" onclick="showFinal()">Yes ❤️</button>
+      <button class="btn-no" id="noBtn" onclick="moveNo(this)">No</button>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL SCREEN -->
 <div class="final-screen hidden" id="finalScreen">
-
-  <div class="final-content">
-
-    <h1>It’s Always Us ❤️</h1>
-
-    <img src="finalimage.png">
-
-    <p>
-      No fight,
-      no misunderstanding,
-      no bad night
-      will ever change
-      how important you are to me.
-    </p>
-
+  <div class="final-bg">
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
   </div>
-
+  <div class="final-inner">
+    <div class="final-hearts">❤️</div>
+    <h1>It's Always Us</h1>
+    <div class="final-img-wrap">
+      <img src="finalimage.png" alt="Us">
+    </div>
+    <p>No fight, no misunderstanding, no bad night will ever change how important you are to me.</p>
+  </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
-```
