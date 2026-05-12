@@ -448,3 +448,17 @@ section {
 .card img.img-face-top {
   object-position: center top;
 }
+
+/* book chapter docs — white bg, show full */
+.card img.img-landscape {
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: #f5f5f0;
+  max-height: 260px;
+  padding: 16px;
+}
+
+/* Image17 poha date — faces upper center */
+.card img.img-poha {
+  object-position: center 20% !important;
+}
