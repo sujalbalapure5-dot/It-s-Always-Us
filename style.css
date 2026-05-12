@@ -430,3 +430,21 @@ section {
 
   .final-content img { max-height: 400px; object-position: center; }
 }
+
+/* ========================= */
+/* PER-IMAGE FIXES */
+/* ========================= */
+
+/* Landscape book chapter images — show full width, center vertically */
+.card img.img-landscape {
+  max-height: 380px;
+  object-fit: contain;
+  object-position: center center;
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+}
+
+/* Feb 13 — face in top half */
+.card img.img-face-top {
+  object-position: center top;
+}
