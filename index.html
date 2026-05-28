@@ -1,353 +1,497 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Please Don't Stop Telling Me Things</title>
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import {
+  ChevronLeft, ChevronRight, Heart, Play, Plus, SkipForward,
+  Star, X, Sparkles, MessageCircleHeart, Volume2, VolumeX, Info, ThumbsUp,
+} from "lucide-react";
 
-  <link rel="stylesheet" href="style.css">
+const timeline = [
+  { title: "October 2025", subtitle: "The First Hi", description: "The first 'Hi' from you never felt normal. Every message from you felt electrifying.", image: "Image1.jpg", genre: "Origin Story", mood: "Electric", duration: "∞" },
+  { title: "Diwali Hunt Game", subtitle: "10 Chances", description: "The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.", image: "Image2.jpg", genre: "Romance", mood: "Playful", duration: "1 night" },
+  { title: "Oct – Nov 2025", subtitle: "Sleepless Nights", description: "The girl who never stayed awake for anyone stayed awake entire nights talking to me.", image: "Image3.jpg", genre: "Drama", mood: "Tender", duration: "Weeks" },
+  { title: "The MEDHA Night", subtitle: "Trust", description: "The night you slowly started opening up to me. A trust I never want to break.", image: "Image4.jpg", genre: "Drama", mood: "Intimate", duration: "1 night" },
+  { title: "The Liking Phase", subtitle: "From Like to Love", description: "'I like you' slowly becoming 'I love you'.", image: "Image5.jpg", genre: "Romance", mood: "Warm", duration: "Weeks" },
+  { title: "4th December 2025", subtitle: "I Love You", description: "The first proper 'I love you'.", image: "Image6.jpg", genre: "Romance", mood: "Euphoric", duration: "Forever" },
+  { title: "12th January 2026", subtitle: "First Kiss", description: "Our first room meet. Our first kiss.", image: "Image7.jpg", genre: "Romance", mood: "Magical", duration: "1 afternoon" },
+  { title: "24th January 2026", subtitle: "ICRTB Conference", description: "My baby wins ICRTB conference. Proud of you beyond words.", image: "Image8.jpg", genre: "Achievement", mood: "Proud", duration: "1 day" },
+  { title: "26th January 2026", subtitle: "Crazy Cheesy Café", description: "Our first date at Crazy Cheesy Café.", image: "Image9.jpg", genre: "Romance", mood: "Butterflies", duration: "1 evening" },
+  { title: "31st January 2026", subtitle: "First Project Together", description: "Our first project together.", image: "Image10.jpg", genre: "Partnership", mood: "Focused", duration: "Days" },
+  { title: "5th February 2026", subtitle: "Book Chapter", description: "Our first book chapter together. One of the moments that made me realize how beautifully we grow together.", image: "Image11.png", genre: "Milestone", mood: "Growth", duration: "Weeks" },
+  { title: "13th February 2026", subtitle: "The Dress", description: "You wore a special dress for me and waited for me despite my late bus.", image: "Image12.jpg", genre: "Romance", mood: "Heart-melting", duration: "1 evening" },
+  { title: "20th February 2026", subtitle: "Testing Day", description: "First testing day together.", image: "Image13.jpg", genre: "Partnership", mood: "Together", duration: "1 day" },
+  { title: "Another Book Chapter", subtitle: "A Great Team", description: "Another milestone we created together — proof that we make a pretty great team.", image: "Image14.png", genre: "Milestone", mood: "Accomplished", duration: "Weeks" },
+  { title: "25th February 2026", subtitle: "Birthday Gift", description: "The handmade birthday gift you made for me. I still can't believe you made that with your hands.", image: "Image15.jpg", genre: "Love", mood: "Cherished", duration: "Forever" },
+  { title: "8th March 2026", subtitle: "Sea Girl", description: "My little sea girl.", image: "Image16.jpg", genre: "Romance", mood: "Free", duration: "1 day" },
+  { title: "2nd April 2026", subtitle: "Poha Date", description: "The poha date. The first time I cooked for you.", image: "Image17.jpg", genre: "Romance", mood: "Cozy", duration: "1 morning" },
+  { title: "15th April 2026", subtitle: "Mumbai Trip", description: "Our Mumbai trip. The train conversation changed me forever.", image: "Image18.jpg", genre: "Adventure", mood: "Life-changing", duration: "Days" },
+  { title: "Internship Arc", subtitle: "Dreams Coming True", description: "We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK got into JNU Delhi.", image: "Image19.jpg", genre: "Achievement", mood: "Victorious", duration: "Months" },
+  { title: "Coming Soon", subtitle: "SJ & GK Research Paper", description: "Soon we begin writing our first research paper together — the first official research story of SJ and GK.", image: "Image20.jpg", genre: "Future", mood: "Hopeful", duration: "∞" },
+];
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
+const GENRE_COLORS = {
+  "Origin Story": "#e50914", Romance: "#e50914", Drama: "#b91c1c",
+  Achievement: "#ca8a04", Partnership: "#15803d", Milestone: "#7c3aed",
+  Love: "#db2777", Adventure: "#0891b2", Future: "#6366f1",
+};
 
-<body>
+const chats = [
+  { who: "him", text: "Phir meri photo 📸", time: "2:14 AM" },
+  { who: "her", text: "Haa haa bhejti hu sone de pahele sabko 😌", time: "2:15 AM" },
+  { who: "him", text: "Yayyyyyyyy 🥹", time: "2:15 AM" },
+  { who: "her", text: "awwww mu cutieee 🥺❤️", time: "2:16 AM" },
+  { who: "him", text: "Reached home?", time: "11:48 PM" },
+  { who: "her", text: "No, still talking to you.", time: "11:49 PM" },
+  { who: "him", text: "Sleep now.", time: "11:50 PM" },
+  { who: "her", text: "You first. 🙃", time: "11:50 PM" },
+];
 
-<div class="stars"></div>
+function MatchScore() {
+  return <span style={{ color: "#46d369" }} className="font-bold text-sm">99% Match</span>;
+}
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>Please Don't Stop Telling Me Things</h1>
-    <p>For the girl who changed everything since October 2025</p>
+function NetflixBadge({ label }) {
+  return <span className="border border-gray-400 px-1 text-xs text-gray-300 font-bold tracking-wider">{label}</span>;
+}
 
-    <button onclick="scrollToTimeline()">
-      Begin Our Story
-    </button>
-  </div>
-</section>
+function HeroSection({ item, onInfo }) {
+  const [muted, setMuted] = useState(true);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
-<!-- INTRO -->
-<section class="intro fade">
-  <h2>Before Anything...</h2>
+  return (
+    <motion.section ref={heroRef} className="relative w-full overflow-hidden" style={{ height: "95vh" }}>
+      <motion.div className="absolute inset-0" style={{ y }}>
+        <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" style={{ filter: "brightness(0.5)" }} />
+      </motion.div>
+      <div className="absolute inset-0" style={{ background: "linear-gradient(77deg,rgba(0,0,0,.8) 0,rgba(0,0,0,0) 85%),linear-gradient(180deg,rgba(20,20,20,0) 0,rgba(20,20,20,.15) 20%,rgba(20,20,20,.35) 40%,rgba(20,20,20,.58) 55%,rgba(20,20,20,.78) 69%,rgba(20,20,20,.97) 90%)" }} />
+      <motion.div className="absolute bottom-0 left-0 right-0 px-4 md:px-16 pb-16 md:pb-28" style={{ opacity }}>
+        {/* Birthday badge */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase"
+          style={{ background: "rgba(232,99,122,0.2)", border: "1px solid rgba(232,99,122,0.5)", color: "#f8a4b4" }}>
+          🎂 Happy Birthday GK ✨
+        </motion.div>
+        <motion.div className="flex items-center gap-2 mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+          <span className="text-xs font-bold tracking-[0.3em] text-gray-300 uppercase">
+            <span style={{ color: "#e50914", fontSize: "1.1em", fontWeight: 900 }}>N</span> Original Series
+          </span>
+        </motion.div>
+        <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
+          className="text-white font-black leading-none mb-4"
+          style={{ fontSize: "clamp(3rem,8vw,7rem)", textShadow: "2px 2px 4px rgba(0,0,0,.45)", fontFamily: "'Georgia',serif", letterSpacing: "-0.02em" }}>
+          SJ & GK
+        </motion.h1>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+          className="flex items-center gap-3 mb-4 flex-wrap">
+          <MatchScore />
+          <NetflixBadge label="A" />
+          <span className="text-gray-300 text-sm">2025 – Present</span>
+          <span className="text-gray-300 text-sm">20 Memories</span>
+          <span className="border border-gray-500 text-gray-300 text-xs px-1.5 py-0.5">HD</span>
+        </motion.div>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+          className="text-gray-200 mb-6 max-w-md leading-relaxed text-sm md:text-base">
+          A cinematic timeline of memories, milestones, chaos, love, dreams, and everything in between. 
+          Science brought them together. Love kept them there.
+        </motion.p>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+          className="flex items-center gap-3 flex-wrap">
+          <button className="flex items-center gap-2 px-6 py-2.5 rounded font-bold text-black text-base transition-all hover:bg-white/80 active:scale-95"
+            style={{ background: "white" }}>
+            <Play size={20} fill="black" /> Play
+          </button>
+          <button className="flex items-center gap-2 px-5 py-2.5 rounded font-semibold text-white text-base transition-all hover:bg-white/20 active:scale-95"
+            style={{ background: "rgba(109,109,110,0.7)" }} onClick={() => onInfo(5)}>
+            <Info size={20} /> More Info
+          </button>
+          <button className="ml-2 p-2.5 rounded-full border-2 border-gray-400 text-white transition hover:border-white"
+            onClick={() => setMuted(m => !m)}>
+            {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+        </motion.div>
+      </motion.div>
+    </motion.section>
+  );
+}
 
-  <p>
-    Yesterday night you were trying to explain your fear,
-    your pressure, your anxiety regarding your plant project.
-  </p>
+function NetflixCard({ item, index, onSelect }) {
+  const [hovered, setHovered] = useState(false);
+  const color = GENRE_COLORS[item.genre] || "#e50914";
+  return (
+    <motion.div
+      className="relative flex-shrink-0 cursor-pointer rounded overflow-hidden"
+      style={{ width: 220, height: 124 }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      animate={hovered ? { scale: 1.08, zIndex: 30 } : { scale: 1, zIndex: 1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onClick={() => onSelect(index)}
+    >
+      <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" />
+      <div className="absolute inset-0" style={{ background: hovered ? "linear-gradient(180deg,transparent 40%,rgba(0,0,0,.9) 100%)" : "linear-gradient(180deg,transparent 50%,rgba(0,0,0,.6) 100%)" }} />
+      <div className="absolute top-1.5 left-1.5 text-white text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: color }}>
+        E{String(index + 1).padStart(2, "0")}
+      </div>
+      {hovered && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-0 left-0 right-0 p-2">
+          <p className="text-white font-bold text-sm leading-tight truncate">{item.subtitle}</p>
+          <p className="text-gray-300 text-xs truncate">{item.title}</p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <button className="rounded-full bg-white p-1"><Play size={10} fill="black" color="black" /></button>
+            <button className="rounded-full border border-gray-400 p-1"><Plus size={10} color="white" /></button>
+            <button className="rounded-full border border-gray-400 p-1"><ThumbsUp size={10} color="white" /></button>
+          </div>
+          <div className="flex items-center gap-2 mt-1.5">
+            <MatchScore />
+            <span className="text-xs text-gray-400">{item.mood}</span>
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
 
-  <p>
-    Instead of understanding that fear,
-    I made you feel misunderstood.
-  </p>
-
-  <p>
-    This website is not to justify what I said.
-    This is to remind you that through every fight,
-    every late night, every project stress,
-    every achievement, every breakdown,
-    every smile... it has always been us.
-  </p>
-</section>
-
-<!-- TIMELINE -->
-<section id="timeline">
-
-  <h2 class="timeline-title fade">Our Story</h2>
-
-  <div class="card fade">
-    <h3>October 2025</h3>
-
-    <p>
-      The first "Hi" from you never felt normal.
-      Every message from you felt electrifying.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>Diwali Hunt Game</h3>
-
-    <p>
-      The first game we played virtually.
-      You gave me 10 chances to guess your address.
-      I came close but still failed.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>Oct - Nov 2025</h3>
-
-    <p>
-      The girl who never stayed awake for anyone
-      stayed awake entire nights talking to me.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>The MEDHA Night</h3>
-
-    <p>
-      The night you slowly started opening up to me.
-      A trust I never want to break.
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>The Liking Phase</h3>
-
-    <p>
-      "I like you" slowly becoming "I love you".
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>4th December 2025</h3>
-
-    <p>
-      The first proper "I love you".
-    </p>
-  </div>
-
-  <div class="card fade">
-    <h3>12th January 2026</h3>
-
-    <p>
-      Our first room meet.
-      Our first kiss.
-    </p>
-
-    <img src="Image5.jpg" alt="12th January 2026">
-  </div>
-
-  <div class="card fade">
-    <h3>24th January 2026</h3>
-
-    <p>
-      My baby wins ICRTB conference.
-      Proud of you beyond words.
-    </p>
-
-    <img src="Image6.jpg" alt="ICRTB Conference">
-  </div>
-
-  <div class="card fade">
-    <h3>26th January 2026</h3>
-
-    <p>
-      Our first date at Crazy Cheesy Café.
-    </p>
-
-    <div class="gallery">
-      <img src="Image7.jpg" alt="Date">
-      <img src="Image8.jpg" alt="Date">
-      <img src="Image9.jpg" alt="Date">
+function CardRow({ title, items, onSelect, icon: Icon, startIndex = 0 }) {
+  const rowRef = useRef(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
+  const scroll = (dir) => rowRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+  const onScroll = useCallback(() => {
+    const el = rowRef.current;
+    if (!el) return;
+    setCanLeft(el.scrollLeft > 10);
+    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+  }, []);
+  return (
+    <div className="mb-8 group/row">
+      <div className="flex items-center gap-3 px-4 md:px-16 mb-3">
+        {Icon && <Icon size={18} style={{ color: "#e50914" }} />}
+        <h2 className="text-white font-bold text-xl tracking-tight">{title}</h2>
+        <span className="text-xs font-bold tracking-widest opacity-0 group-hover/row:opacity-100 transition" style={{ color: "#46d369" }}>Explore All</span>
+      </div>
+      <div className="relative">
+        {canLeft && (
+          <button onClick={() => scroll(-1)} className="absolute left-0 top-0 bottom-0 z-20 w-12 flex items-center justify-center text-white opacity-0 group-hover/row:opacity-100 transition" style={{ background: "linear-gradient(to right,rgba(20,20,20,.9),transparent)" }}>
+            <ChevronLeft size={28} />
+          </button>
+        )}
+        {canRight && (
+          <button onClick={() => scroll(1)} className="absolute right-0 top-0 bottom-0 z-20 w-12 flex items-center justify-center text-white opacity-0 group-hover/row:opacity-100 transition" style={{ background: "linear-gradient(to left,rgba(20,20,20,.9),transparent)" }}>
+            <ChevronRight size={28} />
+          </button>
+        )}
+        <div ref={rowRef} onScroll={onScroll} className="flex gap-2 overflow-x-auto px-4 md:px-16" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+          {items.map((item, i) => (
+            <NetflixCard key={i} item={item} index={startIndex + i} onSelect={onSelect} />
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
+  );
+}
 
-  <div class="card fade">
-    <h3>31st January 2026</h3>
+function ModalCard({ item, index, onClose }) {
+  if (!item) return null;
+  const color = GENRE_COLORS[item.genre] || "#e50914";
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-8"
+      style={{ background: "rgba(0,0,0,0.75)" }} onClick={onClose}>
+      <motion.div initial={{ y: 80, scale: 0.95 }} animate={{ y: 0, scale: 1 }} exit={{ y: 80, scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="relative w-full md:max-w-3xl overflow-hidden rounded-t-2xl md:rounded-2xl"
+        style={{ background: "#141414", maxHeight: "90vh", overflowY: "auto" }}
+        onClick={e => e.stopPropagation()}>
+        <div className="relative h-56 md:h-72">
+          <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(20,20,20,0) 40%,rgba(20,20,20,1) 100%)" }} />
+          <button onClick={onClose} className="absolute top-4 right-4 rounded-full p-2 text-white" style={{ background: "rgba(20,20,20,0.7)" }}>
+            <X size={18} />
+          </button>
+          <div className="absolute bottom-4 left-4 flex items-center gap-3">
+            <button className="flex items-center gap-2 px-5 py-2 rounded font-bold text-black text-sm" style={{ background: "white" }}>
+              <Play size={16} fill="black" /> Play
+            </button>
+            <button className="rounded-full border-2 border-gray-400 p-2"><Plus size={16} color="white" /></button>
+            <button className="rounded-full border-2 border-gray-400 p-2"><Heart size={16} color="white" /></button>
+          </div>
+        </div>
+        <div className="px-6 pb-8 pt-2">
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
+            <MatchScore />
+            <span className="text-gray-400 text-sm">{item.title}</span>
+            <span className="border border-gray-500 text-xs text-gray-300 px-1">{item.duration}</span>
+            <span className="border border-gray-500 text-xs text-gray-300 px-1">HD</span>
+          </div>
+          <h2 className="text-white text-2xl font-black mb-3" style={{ fontFamily: "'Georgia',serif" }}>{item.subtitle}</h2>
+          <p className="text-gray-300 leading-relaxed text-sm">{item.description}</p>
+          <div className="mt-5 flex flex-wrap gap-2 text-xs text-gray-400">
+            <span>Genre: <span className="text-white" style={{ color }}>{item.genre}</span></span>
+            <span className="text-gray-600">|</span>
+            <span>Mood: <span className="text-white">{item.mood}</span></span>
+            <span className="text-gray-600">|</span>
+            <span>Episode: <span className="text-white">{index + 1} of {timeline.length}</span></span>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
-    <p>
-      Our first project together.
-    </p>
+/* ── SWEET BIRTHDAY ENDING ── */
+function BirthdayEnding() {
+  const [revealed, setRevealed] = useState(false);
+  const lines = [
+    "You stayed up when you didn't have to.",
+    "You waited even when the bus was late.",
+    "You made something with your hands just for me.",
+    "You opened up when it was hard.",
+    "You grew with me — in labs, in papers, in life.",
+  ];
+  return (
+    <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}
+      className="mx-4 md:mx-16 my-14 rounded-2xl overflow-hidden"
+      style={{ background: "linear-gradient(160deg,#120008 0%,#0a0a14 50%,#001008 100%)", border: "1px solid rgba(232,99,122,0.2)" }}>
+      <div className="p-10 md:p-16 max-w-2xl mx-auto text-center">
 
-    <img src="Image10.jpg" alt="Project">
-  </div>
+        <motion.p className="text-xs uppercase tracking-[0.4em] mb-5" style={{ color: "#e50914" }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          A message from me, to you
+        </motion.p>
 
-  <!-- BOOK CHAPTER WITHOUT IMAGE -->
-  <div class="card fade">
-    <h3>5th February 2026</h3>
+        <motion.h3 className="text-4xl md:text-5xl font-black mb-10 text-white leading-tight"
+          style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+          You are the best thing<br/>that happened to me.
+        </motion.h3>
 
-    <p>
-      Our first book chapter together.
-      One of the moments that made me realize
-      how beautifully we grow together.
-    </p>
-  </div>
+        <div className="space-y-4 mb-10">
+          {lines.map((line, i) => (
+            <motion.p key={i} className="text-gray-300 text-base leading-relaxed"
+              initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * i, duration: 0.6 }} viewport={{ once: true }}>
+              <span style={{ color: "#e50914" }}>✦</span> {line}
+            </motion.p>
+          ))}
+        </div>
 
-  <div class="card fade">
-    <h3>13th February 2026</h3>
+        <motion.p className="text-gray-300 text-base leading-loose mb-8"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.6 }} viewport={{ once: true }}>
+          On your birthday, I just want you to know one thing —<br/>
+          <span className="text-white font-semibold">choosing you, every single day, is the easiest decision I make.</span>
+        </motion.p>
 
-    <p>
-      You wore a special dress for me
-      and waited for me despite my late bus.
-    </p>
+        {/* Surprise button */}
+        {!revealed ? (
+          <motion.button onClick={() => setRevealed(true)}
+            whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            className="px-8 py-3 rounded-full font-bold text-white text-sm tracking-widest uppercase transition-all"
+            style={{ background: "linear-gradient(135deg,#e50914,#c2185b)", boxShadow: "0 0 40px rgba(229,9,20,0.4)" }}
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.8 }}>
+            🎁 Open Your Surprise
+          </motion.button>
+        ) : (
+          <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 200 }}
+            className="mt-4 rounded-2xl p-8 text-center"
+            style={{ background: "rgba(229,9,20,0.08)", border: "1px solid rgba(229,9,20,0.3)" }}>
+            <div className="text-5xl mb-4">🥺❤️</div>
+            <p className="text-white text-xl font-black mb-3" style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}>
+              Happy Birthday, GK.
+            </p>
+            <p className="text-gray-300 leading-loose text-sm max-w-sm mx-auto">
+              This is not just a website.<br/>
+              This is every moment I never want to forget,<br/>
+              every memory I am proud of,<br/>
+              every reason I fall more in love with you.<br/><br/>
+              <span className="text-white font-semibold">It's always going to be us. ❤️</span>
+            </p>
+            <img src="finalimage.png" alt="Us" className="w-40 h-40 object-cover rounded-full mx-auto mt-6"
+              style={{ border: "2px solid #e50914", boxShadow: "0 0 50px rgba(229,9,20,0.45)" }} />
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
-    <img src="Image12.jpg" alt="13th February">
-  </div>
+export default function NetflixLoveStory() {
+  const [showLoader, setShowLoader] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
+  const [activeCard, setActiveCard] = useState(null);
 
-  <div class="card fade">
-    <h3>20th February 2026</h3>
+  useEffect(() => {
+    const t1 = setTimeout(() => setShowLoader(false), 2400);
+    const t2 = setTimeout(() => setShowIntro(false), 5500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
 
-    <p>
-      First testing day together.
-    </p>
+  const romanceItems = timeline.filter(t => t.genre === "Romance");
+  const romanceIndexes = timeline.map((t, i) => t.genre === "Romance" ? i : -1).filter(i => i >= 0);
+  const milestoneItems = timeline.filter(t => ["Milestone", "Achievement"].includes(t.genre));
+  const milestoneIndexes = timeline.map((t, i) => ["Milestone", "Achievement"].includes(t.genre) ? i : -1).filter(i => i >= 0);
 
-    <img src="Image13.jpg" alt="Testing Day">
-  </div>
+  if (showLoader) {
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ background: "#141414" }}>
+        <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6 }}>
+          <div className="text-5xl font-black" style={{ color: "#e50914", fontFamily: "Arial Black, sans-serif", letterSpacing: "-2px" }}>SJ&GK</div>
+        </motion.div>
+        <motion.div className="mt-12 flex gap-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+          {[0,1,2].map(i => (
+            <motion.div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#e50914" }}
+              animate={{ scale: [1,1.5,1], opacity: [0.4,1,0.4] }}
+              transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2 }} />
+          ))}
+        </motion.div>
+      </div>
+    );
+  }
 
-  <!-- SECOND BOOK CHAPTER WITHOUT IMAGE -->
-  <div class="card fade">
-    <h3>Another Book Chapter</h3>
+  return (
+    <div className="relative min-h-screen font-sans text-white" style={{ background: "#141414" }}>
 
-    <p>
-      Another milestone we created together —
-      proof that we make a pretty great team.
-    </p>
-  </div>
+      {/* Intro */}
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}
+            className="fixed inset-0 z-[150] flex items-center justify-center" style={{ background: "#000" }}>
+            <div className="text-center">
+              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.8, ease: [0.23,1,0.32,1] }}
+                className="mx-auto mb-6" style={{ width: 240, height: 4, background: "#e50914", transformOrigin: "left" }} />
+              <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.8 }}
+                className="text-5xl md:text-7xl font-black text-white tracking-tight" style={{ fontFamily: "'Georgia',serif" }}>
+                SJ & GK
+              </motion.h1>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
+                className="mt-3 tracking-[0.4em] text-xs uppercase text-gray-400">An Original Love Story</motion.p>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}
+                className="mt-2 text-sm" style={{ color: "#f8a4b4" }}>🎂 Happy Birthday GK ✨</motion.p>
+            </div>
+            <button onClick={() => setShowIntro(false)} className="absolute right-8 top-8 flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
+              <SkipForward size={14} /> Skip Intro
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-  <div class="card fade">
-    <h3>25th February 2026</h3>
+      {/* Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 md:px-16 py-4"
+        style={{ background: "linear-gradient(180deg,rgba(20,20,20,0.9) 0%,transparent 100%)" }}>
+        <div className="flex items-center gap-8">
+          <span className="text-2xl font-black tracking-tight" style={{ color: "#e50914", fontFamily: "Arial Black,sans-serif", letterSpacing: "-1px" }}>SJ&GK</span>
+          <div className="hidden md:flex items-center gap-6 text-sm text-gray-300">
+            <span className="text-white font-semibold cursor-pointer">Home</span>
+            <span className="cursor-pointer hover:text-white transition">Our Story</span>
+            <span className="cursor-pointer hover:text-white transition">Milestones</span>
+            <span className="cursor-pointer hover:text-white transition">New & Upcoming</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <Heart size={20} className="cursor-pointer hover:text-red-500 transition" />
+          <div className="w-8 h-8 rounded text-white font-bold text-sm flex items-center justify-center cursor-pointer" style={{ background: "#e50914" }}>S</div>
+        </div>
+      </nav>
 
-    <p>
-      The handmade birthday gift you made for me.
-    </p>
+      {/* Hero */}
+      <HeroSection item={timeline[5]} onInfo={setActiveCard} />
 
-    <img src="Image15.jpg" alt="Birthday Gift">
-  </div>
+      {/* Content */}
+      <div className="relative z-10 -mt-16 pb-24" style={{ background: "#141414" }}>
 
-  <div class="card fade">
-    <h3>8th March 2026</h3>
+        {/* Birthday strip */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          className="mx-4 md:mx-16 mb-8 rounded-xl px-8 py-5 text-center"
+          style={{ background: "linear-gradient(135deg,rgba(232,99,122,0.12),rgba(201,169,110,0.08))", border: "1px solid rgba(232,99,122,0.2)" }}>
+          <p className="text-2xl mb-1">🎂 ✨ 🎉 ✨ 🎂</p>
+          <p className="font-black text-xl text-white" style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}>Happy Birthday, GK</p>
+          <p className="text-gray-400 text-sm mt-1">Of all the days in the year, this one belongs entirely to you.</p>
+        </motion.div>
 
-    <p>
-      My little sea girl.
-    </p>
+        {/* Late night chats */}
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+          className="mx-4 md:mx-16 mb-10 rounded-xl overflow-hidden"
+          style={{ background: "linear-gradient(135deg,#1a0000 0%,#141414 50%,#001a05 100%)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="grid md:grid-cols-2 gap-0">
+            <div className="p-8 md:p-10">
+              <div className="flex items-center gap-2 mb-6">
+                <MessageCircleHeart size={20} style={{ color: "#e50914" }} />
+                <span className="text-xs uppercase tracking-[0.3em] text-gray-400">2 AM · Every Night</span>
+              </div>
+              <h3 className="text-3xl font-black mb-2 text-white" style={{ fontFamily: "'Georgia',serif" }}>Late Night Chats</h3>
+              <p className="text-gray-400 text-sm mb-8">The conversations nobody else knows about.</p>
+              <div className="space-y-3">
+                {chats.map((c, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, x: c.who === "him" ? 20 : -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}
+                    className={`flex ${c.who === "him" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${c.who === "him" ? "rounded-br-sm text-white" : "rounded-bl-sm text-gray-200"}`}
+                      style={c.who === "him" ? { background: "#e50914" } : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <p>{c.text}</p>
+                      <p className="text-[10px] mt-1 opacity-40 text-right">{c.time}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            <div className="hidden md:block relative">
+              <img src="Image3.jpg" alt="late nights" className="w-full h-full object-cover" style={{ minHeight: 420 }} />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to right,#141414 0%,transparent 30%)" }} />
+              <div className="absolute bottom-6 left-6">
+                <p className="text-white font-black text-2xl" style={{ fontFamily: "'Georgia',serif" }}>"You first."</p>
+                <p className="text-gray-400 text-sm mt-1">— Her, every night</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
-    <img src="Image16.jpg" alt="Sea Girl">
-  </div>
+        {/* Rows */}
+        <CardRow title="Because You Love Romance" items={romanceItems} onSelect={i => setActiveCard(romanceIndexes[i])} icon={Heart} />
+        <CardRow title="Continue Watching Our Story" items={timeline.slice(10, 17)} onSelect={i => setActiveCard(i + 10)} icon={Play} startIndex={10} />
+        <CardRow title="Milestones & Achievements" items={milestoneItems} onSelect={i => setActiveCard(milestoneIndexes[i])} icon={Star} />
+        <CardRow title="All Episodes — SJ & GK" items={timeline} onSelect={setActiveCard} icon={Sparkles} />
 
-  <div class="card fade">
-    <h3>2nd April 2026</h3>
+        {/* Sweet birthday ending */}
+        <BirthdayEnding />
 
-    <p>
-      The poha date.
-      The first time I cooked for you.
-    </p>
+        {/* Quotes */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          className="mx-4 md:mx-16 my-12 py-16 text-center relative overflow-hidden rounded-xl"
+          style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.04)" }}>
+          <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 50% 50%,#e50914,transparent 70%)" }} />
+          {["She became his peace.", "Science brought them together.", "They didn't just fall in love. They built things together."].map((q, i) => (
+            <motion.p key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.2 }} viewport={{ once: true }}
+              className="text-gray-300 text-xl md:text-3xl font-light italic mb-4 relative z-10"
+              style={{ fontFamily: "'Georgia',serif" }}>
+              "{q}"
+            </motion.p>
+          ))}
+        </motion.div>
 
-    <img src="Image17.jpg" alt="Poha Date">
-  </div>
+        {/* Credits */}
+        <div className="px-4 md:px-16 py-16 text-center">
+          <div className="inline-block text-xs uppercase tracking-[0.5em] px-3 py-1 mb-6" style={{ color: "#e50914", border: "1px solid #e50914" }}>N Original</div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="space-y-2 text-gray-500 text-sm mb-16">
+            {["Directed by Love", "Written by Fate", "Research by SJ & GK", "Starring Sujal & GK", "Music by Late Night Conversations"].map((c, i) => (
+              <motion.p key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>{c}</motion.p>
+            ))}
+          </motion.div>
+          <motion.h2 initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+            className="text-4xl md:text-6xl font-black text-white" style={{ fontFamily: "'Georgia',serif", textShadow: "0 0 60px rgba(229,9,20,0.3)" }}>
+            To Be Continued...
+          </motion.h2>
+          <p className="text-gray-500 mt-4 text-sm">More memories. More papers. More cities. More us.</p>
+        </div>
+      </div>
 
-  <div class="card fade">
-    <h3>15th April 2026</h3>
+      {/* Episode modal */}
+      <AnimatePresence>
+        {activeCard !== null && (
+          <ModalCard item={timeline[activeCard]} index={activeCard} onClose={() => setActiveCard(null)} />
+        )}
+      </AnimatePresence>
 
-    <p>
-      Our Mumbai trip.
-      The train conversation changed me forever.
-    </p>
-
-    <img src="Image18.jpg" alt="Mumbai Trip">
-  </div>
-
-</section>
-
-<!-- APOLOGY -->
-<section class="apology fade">
-
-  <h2>The Part I Need You To Read Slowly</h2>
-
-  <p>
-    Yesterday night,
-    you were not trying to show me down.
-    You were scared.
-    You were anxious.
-    You were overwhelmed about your plant project.
-  </p>
-
-  <p>
-    And instead of understanding your fear,
-    I made it about myself.
-  </p>
-
-  <p>
-    You specifically spoke about PLANT projects.
-    About the pressure.
-    About how difficult and time consuming they are.
-  </p>
-
-  <p>
-    But I twisted your words in anger and ego.
-  </p>
-
-  <p>
-    None of what I said was true.
-    Not even one bit.
-  </p>
-
-  <p>
-    It was my frustration,
-    my jealousy,
-    my ego clash,
-    and my anger speaking.
-  </p>
-
-  <p>
-    Not my heart.
-  </p>
-
-  <p>
-    I don't want you to think 100 times
-    before telling me things.
-    Especially your fears.
-    Especially your project stress.
-  </p>
-
-  <p>
-    I WANT to hear them.
-    I WANT to understand them.
-    I WANT to be your safe place.
-  </p>
-
-  <p class="final-text">
-    I am sorry, GK.
-    <br>
-    Truly.
-  </p>
-
-</section>
-
-<!-- FORGIVE -->
-<section class="forgive fade">
-
-  <h2>Will You Please Forgive Me?</h2>
-
-  <p>
-    No hurry.
-    I'll wait for your reply.
-  </p>
-
-  <div class="buttons">
-    <button class="yes" onclick="showFinal()">
-      Yes ❤️
-    </button>
-
-    <button class="no" onclick="moveNo(this)">
-      No
-    </button>
-  </div>
-
-</section>
-
-<!-- FINAL SCREEN -->
-<div class="final-screen hidden" id="finalScreen">
-
-  <div class="final-content">
-
-    <h1>It's Always Us ❤️</h1>
-
-    <img src="finalimage.png" alt="Us">
-
-    <p>
-      No fight,
-      no misunderstanding,
-      no bad night
-      will ever change
-      how important you are to me.
-    </p>
-
-  </div>
-
-</div>
-
-<script src="script.js"></script>
-
-</body>
-</html>
+      <style>{`.scrollbar-hide::-webkit-scrollbar{display:none;} [style*="scrollbarWidth"]::-webkit-scrollbar{display:none;}`}</style>
+    </div>
+  );
+}
