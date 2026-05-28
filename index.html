@@ -249,7 +249,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-bg"><img src="Image6.jpg" alt="I Love You" id="heroBg"/></div>
+  <div class="hero-bg"><img src="Image5.jpg" alt="First Kiss" id="heroBg"/></div>
   <div class="hero-vignette"></div>
   <div class="hero-content">
     <div class="hero-badge">🎂 Happy Birthday GK ✨</div>
@@ -265,7 +265,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <p class="hero-desc">A cinematic timeline of memories, milestones, chaos, love, dreams, and everything in between. Science brought them together. Love kept them there.</p>
     <div class="hero-btns">
       <button class="btn-play">▶ Play</button>
-      <button class="btn-info" onclick="openModal(5)">ℹ More Info</button>
+      <button class="btn-info" onclick="openModal(6)">ℹ More Info</button>
       <button class="btn-mute" id="muteBtn" onclick="toggleMute()">🔇</button>
     </div>
   </div>
@@ -307,16 +307,62 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <!-- Birthday ending -->
   <div class="bday-end fi">
     <div class="bday-end-inner">
-      <span class="end-lbl">A message from me, to you</span>
-      <h2 class="end-title">You are the best thing<br/>that happened to me.</h2>
+      <span class="end-lbl">From me. Only for you.</span>
+      <h2 class="end-title">GK —<br/>Happy Birthday, my love.</h2>
+
+      <p class="end-msg" style="font-family:Georgia,serif;font-style:italic;font-size:1.05rem;color:#ddd;margin-bottom:2rem;">
+        I made this because words in a text feel too small.<br/>
+        I wanted you to <em style="color:#fff;font-style:normal;">see</em> everything — every memory, every late night, every moment I fell a little more.
+      </p>
+
       <div class="end-lines" id="endLines"></div>
-      <p class="end-msg">On your birthday, I just want you to know one thing —<br/><strong>choosing you, every single day, is the easiest decision I make.</strong></p>
-      <button class="surp-btn" onclick="revealSurprise()">🎁 Open Your Surprise</button>
+
+      <div style="margin:2rem 0;padding:1.5rem;border-left:2px solid var(--red);text-align:left;max-width:460px;margin-left:auto;margin-right:auto;">
+        <p style="font-family:Georgia,serif;font-style:italic;font-size:1.1rem;color:#fff;line-height:1.8;">
+          "You are the kind of person who makes ordinary days feel like something worth remembering.<br/>
+          And I have been remembering every single one."
+        </p>
+      </div>
+
+      <p class="end-msg">
+        You stayed up entire nights. You waited for late buses. You made something with your hands just to make me smile.
+        You shared your fears, your projects, your dreams — with me.<br/><br/>
+        <strong>That trust is the most precious thing anyone has ever given me.</strong>
+      </p>
+
+      <p class="end-msg" style="color:#fff;font-size:1rem;">
+        On this birthday I want you to know —<br/>
+        I am not just in love with you.<br/>
+        I am <strong>proud</strong> of you. Every single day.<br/>
+        Proud of the researcher, the fighter, the dreamer,<br/>
+        the girl who stayed up just to talk to me.
+      </p>
+
+      <button class="surp-btn" onclick="revealSurprise()">🎁 Open Your Birthday Surprise</button>
+
       <div class="surp-reveal" id="surpReveal">
-        <div class="surp-emoji">🥺❤️</div>
+        <div class="surp-emoji">🥺❤️🎂</div>
         <p class="surp-ttl">Happy Birthday, GK.</p>
-        <p class="surp-body">This is not just a website.<br/>This is every moment I never want to forget,<br/>every memory I am proud of,<br/>every reason I fall more in love with you.<br/><br/><strong style="color:#fff;">It's always going to be us. ❤️</strong></p>
+        <p class="surp-body" style="font-size:.95rem;line-height:2;">
+          This is not just a website.<br/>
+          This is <em style="color:#f8a4b4;">every 2 AM</em> I never want to forget.<br/>
+          Every photo you sent before letting everyone else sleep.<br/>
+          Every time you said "you first."<br/>
+          Every memory I want to carry for the rest of my life.<br/><br/>
+          We have written book chapters together.<br/>
+          We have cracked conferences.<br/>
+          We got into IISc and JNU.<br/>
+          And very soon — <em style="color:#f8a4b4;">we write our first research paper</em>.<br/><br/>
+          <span style="color:#fff;font-size:1.05rem;font-family:Georgia,serif;font-style:italic;">
+            Science brought us together.<br/>
+            Love is keeping us here.
+          </span><br/><br/>
+          <strong style="color:#fff;">It is always going to be us. ❤️</strong>
+        </p>
         <img src="finalimage.png" alt="Us" class="surp-photo"/>
+        <p style="margin-top:1.2rem;color:#e50914;font-family:Georgia,serif;font-style:italic;font-size:1.2rem;">
+          — Sujal 🥀
+        </p>
       </div>
     </div>
   </div>
@@ -326,6 +372,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="quotes-glow"></div>
     <p class="q-line">"She became his peace."</p>
     <p class="q-line">"Science brought them together."</p>
+    <p class="q-line">"She said 'you first' — and meant it every time."</p>
     <p class="q-line">"They didn't just fall in love. They built things together."</p>
   </div>
 
@@ -333,12 +380,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="credits">
     <div class="cred-badge">N Original</div>
     <div class="cred-list">
-      <span>Directed by Love</span><span>Written by Fate</span>
-      <span>Research by SJ &amp; GK</span><span>Starring Sujal &amp; GK</span>
+      <span>Directed by Love</span>
+      <span>Written by Fate</span>
+      <span>Research by SJ &amp; GK</span>
+      <span>Starring Sujal &amp; GK</span>
       <span>Music by Late Night Conversations</span>
+      <span>Special Thanks to Every 2 AM</span>
     </div>
     <h2 class="cred-title">To Be Continued...</h2>
-    <p class="cred-sub">More memories. More papers. More cities. More us.</p>
+    <p class="cred-sub" style="font-family:Georgia,serif;font-style:italic;font-size:1rem;color:#666;margin-top:.8rem;">
+      More memories. More papers. More cities. More us.
+    </p>
+    <p style="margin-top:2rem;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:#333;">
+      Made with love · For GK · 2026
+    </p>
   </div>
 </div>
 
@@ -374,10 +429,10 @@ const timeline = [
   { title:"Oct – Nov 2025",    subtitle:"Sleepless Nights",      description:"The girl who never stayed awake for anyone stayed awake entire nights talking to me.",                                             image:"Image3.jpg", quote:"She stayed up. For the first time.",                         genre:"Drama",        mood:"Tender",        duration:"Weeks"      },
   { title:"The MEDHA Night",   subtitle:"Trust",                 description:"The night you slowly started opening up to me. A trust I never want to break.",                                                    image:null,         quote:"The night trust was born.",                                  genre:"Drama",        mood:"Intimate",      duration:"1 night"    },
   { title:"The Liking Phase",  subtitle:"From Like to Love",     description:"'I like you' slowly becoming 'I love you'.",                                                                                       image:null,         quote:"'I like you.' Then one day — 'I love you.'",                 genre:"Romance",      mood:"Warm",          duration:"Weeks"      },
-  { title:"4th Dec 2025",      subtitle:"I Love You",            description:"The first proper 'I love you'.",                                                                                                   image:"Image6.jpg", quote:"The first proper I love you.",                               genre:"Romance",      mood:"Euphoric",      duration:"Forever"    },
-  { title:"12th Jan 2026",     subtitle:"First Kiss",            description:"Our first room meet. Our first kiss.",                                                                                             image:"Image7.jpg", quote:"Our first room meet. Our first kiss.",                       genre:"Romance",      mood:"Magical",       duration:"1 afternoon"},
-  { title:"24th Jan 2026",     subtitle:"ICRTB Conference",      description:"My baby wins ICRTB conference. Proud of you beyond words.",                                                                        image:"Image8.jpg", quote:"She won. I was the proudest person in the room.",            genre:"Achievement",  mood:"Proud",         duration:"1 day"      },
-  { title:"26th Jan 2026",     subtitle:"Crazy Cheesy Café",     description:"Our first date at Crazy Cheesy Café.",                                                                                             image:"Image9.jpg", quote:"Our first date. Crazy Cheesy Café.",                         genre:"Romance",      mood:"Butterflies",   duration:"1 evening"  },
+  { title:"4th Dec 2025",      subtitle:"I Love You",            description:"The first proper 'I love you'.",                                                                                                   image:null,         quote:"The first proper 'I love you.'",                             genre:"Romance",      mood:"Euphoric",      duration:"Forever"    },
+  { title:"12th Jan 2026",     subtitle:"First Kiss",            description:"Our first room meet. Our first kiss.",                                                                                             image:"Image5.jpg", quote:"Our first room meet. Our first kiss.",                       genre:"Romance",      mood:"Magical",       duration:"1 afternoon"},
+  { title:"24th Jan 2026",     subtitle:"ICRTB Conference",      description:"My baby wins ICRTB conference. Proud of you beyond words.",                                                                        image:"Image6.jpg", quote:"She won. I was the proudest person in the room.",            genre:"Achievement",  mood:"Proud",         duration:"1 day"      },
+  { title:"26th Jan 2026",     subtitle:"Crazy Cheesy Café",     description:"Our first date at Crazy Cheesy Café.",                                                                                             image:"Image7.jpg", quote:"Our first date. Crazy Cheesy Café.",                         genre:"Romance",      mood:"Butterflies",   duration:"1 evening"  },
   { title:"31st Jan 2026",     subtitle:"First Project",         description:"Our first project together.",                                                                                                      image:"Image10.jpg",quote:"The first time we built something together.",                genre:"Partnership",  mood:"Focused",       duration:"Days"       },
   { title:"5th Feb 2026",      subtitle:"Book Chapter",          description:"Our first book chapter together. One of the moments that made me realize how beautifully we grow together.",                      image:"Image11.png",quote:"Our names on the same chapter.",                          genre:"Milestone",    mood:"Growth",        duration:"Weeks"      },
   { title:"13th Feb 2026",     subtitle:"The Dress",             description:"You wore a special dress for me and waited for me despite my late bus.",                                                          image:"Image12.jpg",quote:"She waited. Even when the bus was late.",                   genre:"Romance",      mood:"Heart-melting", duration:"1 evening"  },
@@ -387,8 +442,8 @@ const timeline = [
   { title:"8th Mar 2026",      subtitle:"Sea Girl",              description:"My little sea girl.",                                                                                                              image:"Image16.jpg",quote:"My little sea girl.",                                    genre:"Romance",      mood:"Free",          duration:"1 day"      },
   { title:"2nd Apr 2026",      subtitle:"Poha Date",             description:"The poha date. The first time I cooked for you.",                                                                                 image:"Image17.jpg",quote:"The first time I cooked for her.",                         genre:"Romance",      mood:"Cozy",          duration:"1 morning"  },
   { title:"15th Apr 2026",     subtitle:"Mumbai Trip",           description:"Our Mumbai trip. The train conversation changed me forever.",                                                                      image:"Image18.jpg",quote:"The train conversation that changed me.",                   genre:"Adventure",    mood:"Life-changing", duration:"Days"       },
-  { title:"Internship Arc",    subtitle:"Dreams Coming True",    description:"We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK into JNU Delhi.", image:"Image19.jpg",quote:"IISc Bangalore. JNU Delhi. We made it.",    genre:"Achievement",  mood:"Victorious",    duration:"Months"     },
-  { title:"Coming Soon",       subtitle:"SJ & GK Research Paper",description:"Soon we begin writing our first research paper together — the first official research story of SJ and GK.",                      image:null,         quote:"Our first research paper together. Coming soon.",             genre:"Future",       mood:"Hopeful",       duration:"∞"          },
+  { title:"Internship Arc",    subtitle:"Dreams Coming True",    description:"We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK into JNU Delhi.", image:null,         quote:"IISc Bangalore. JNU Delhi. We made it.",                     genre:"Achievement",  mood:"Victorious",    duration:"Months"     },
+  { title:"Coming Soon ✨",    subtitle:"SJ & GK Research Paper",description:"The next chapter begins soon — our very first research paper together. Two scientists, one story, infinite possibilities.",         image:null,         quote:"Two names. One paper. Infinite possibilities.",               genre:"Future",       mood:"Hopeful",       duration:"∞"          },
 ];
 
 const chats = [
