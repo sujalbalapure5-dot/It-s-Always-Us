@@ -4,256 +4,257 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SJ & GK — An Original Love Story</title>
-<link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --red:#e50914;--red-glow:rgba(229,9,20,0.4);--red-dim:rgba(229,9,20,0.15);
-  --bg:#141414;--surface:#1f1f1f;--text:#fff;--muted:#aaa;--green:#46d369;
+  --red:#e50914;--bg:#141414;--surface:#1a1a1a;
+  --text:#fff;--muted:#999;--green:#46d369;
+  --px:4rem;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{height:3px;width:3px;}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{height:4px;width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--red);border-radius:4px;}
-
-/* LOADER */
-#loader{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s;}
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .8s;}
 #loader.hide{opacity:0;pointer-events:none;}
-.loader-logo{font-size:3rem;font-weight:900;color:var(--red);letter-spacing:-2px;font-family:Georgia,serif;animation:loaderPop 0.6s ease both;}
-.loader-dots{display:flex;gap:6px;margin-top:3rem;}
-.loader-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:dotPulse 1.2s ease infinite;}
-.loader-dot:nth-child(2){animation-delay:.2s;}
-.loader-dot:nth-child(3){animation-delay:.4s;}
-@keyframes loaderPop{from{opacity:0;transform:scale(.5);}to{opacity:1;transform:scale(1);}}
-@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.4;}50%{transform:scale(1.5);opacity:1;}}
+.ld-logo{font-size:2.8rem;font-weight:900;color:var(--red);letter-spacing:-2px;font-family:Georgia,serif;animation:pop .6s ease both;}
+.ld-dots{display:flex;gap:5px;margin-top:2.5rem;}
+.ld-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:dp 1.2s ease infinite;}
+.ld-dot:nth-child(2){animation-delay:.2s;}.ld-dot:nth-child(3){animation-delay:.4s;}
+@keyframes pop{from{opacity:0;transform:scale(.5);}to{opacity:1;transform:scale(1);}}
+@keyframes dp{0%,100%{transform:scale(1);opacity:.3;}50%{transform:scale(1.6);opacity:1;}}
 
-/* INTRO */
+/* ── INTRO ── */
 #intro{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9998;transition:opacity 1s;}
 #intro.hide{opacity:0;pointer-events:none;}
-.intro-inner{text-align:center;}
-.intro-line{width:0;height:4px;background:var(--red);margin:0 auto 1.5rem;transition:width 1.8s cubic-bezier(.23,1,.32,1);}
-.intro-line.grow{width:240px;}
-.intro-title{font-size:clamp(2.5rem,8vw,5rem);font-weight:900;color:#fff;font-family:Georgia,serif;opacity:0;transform:translateY(20px);transition:all .8s .8s;}
-.intro-title.show{opacity:1;transform:translateY(0);}
-.intro-sub{margin-top:.75rem;font-size:.75rem;letter-spacing:.4em;text-transform:uppercase;color:#666;opacity:0;transition:opacity .8s 1.8s;}
-.intro-sub.show{opacity:1;}
-.intro-bday{margin-top:.5rem;font-size:.9rem;color:#f8a4b4;opacity:0;transition:opacity .8s 2.4s;}
+.intro-bar{width:0;height:4px;background:var(--red);margin:0 auto 1.5rem;transition:width 1.8s cubic-bezier(.23,1,.32,1);}
+.intro-bar.go{width:220px;}
+.intro-h1{font-size:clamp(2.5rem,8vw,5rem);font-weight:900;color:#fff;font-family:Georgia,serif;opacity:0;transform:translateY(18px);transition:all .8s .8s;}
+.intro-h1.show{opacity:1;transform:none;}
+.intro-p{margin-top:.6rem;font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:#555;opacity:0;transition:opacity .8s 1.8s;}
+.intro-p.show{opacity:1;}
+.intro-bday{margin-top:.4rem;font-size:.85rem;color:#f8a4b4;opacity:0;transition:opacity .8s 2.4s;}
 .intro-bday.show{opacity:1;}
-#skip-btn{position:absolute;right:2rem;top:2rem;background:none;border:none;color:#666;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:color .3s;}
-#skip-btn:hover{color:#fff;}
+#skip{position:absolute;right:1.5rem;top:1.5rem;background:none;border:none;color:#555;font-size:.8rem;cursor:pointer;transition:color .3s;}
+#skip:hover{color:#fff;}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 4rem;background:linear-gradient(180deg,rgba(20,20,20,.9) 0%,transparent 100%);}
-.nav-logo{font-size:1.5rem;font-weight:900;color:var(--red);letter-spacing:-1px;font-family:Arial Black,sans-serif;}
-.nav-links{display:flex;gap:1.5rem;font-size:.85rem;color:#aaa;}
-.nav-links span{cursor:pointer;transition:color .3s;}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.9rem var(--px);background:linear-gradient(180deg,rgba(20,20,20,.95) 0%,transparent 100%);}
+.nav-logo{font-size:1.4rem;font-weight:900;color:var(--red);letter-spacing:-1px;font-family:Arial Black,sans-serif;flex-shrink:0;}
+.nav-links{display:flex;gap:1.4rem;font-size:.82rem;color:#aaa;}
+.nav-links span{cursor:pointer;transition:color .2s;white-space:nowrap;}
 .nav-links span:first-child,.nav-links span:hover{color:#fff;font-weight:600;}
-.nav-right{display:flex;align-items:center;gap:1rem;}
-.nav-avatar{width:32px;height:32px;border-radius:4px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;cursor:pointer;}
-@media(max-width:768px){nav{padding:1rem 1.2rem;}.nav-links{display:none;}}
+.nav-right{display:flex;align-items:center;gap:.8rem;flex-shrink:0;}
+.nav-avatar{width:30px;height:30px;border-radius:4px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;}
+@media(max-width:768px){nav{padding:.8rem 1.2rem;}  .nav-links{display:none;}}
 
-/* HERO */
+/* ── HERO ── */
 #hero{position:relative;height:95vh;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;}
-.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.5);transform:scale(1.05);transition:transform 8s ease;}
-.hero-vignette{position:absolute;inset:0;background:linear-gradient(77deg,rgba(0,0,0,.8) 0,rgba(0,0,0,0) 85%),linear-gradient(180deg,rgba(20,20,20,0) 0,rgba(20,20,20,.15) 20%,rgba(20,20,20,.35) 40%,rgba(20,20,20,.58) 55%,rgba(20,20,20,.78) 69%,rgba(20,20,20,.97) 90%);}
-.hero-content{position:absolute;bottom:0;left:0;right:0;padding:0 4rem 7rem;}
-.hero-bday-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(232,99,122,.2);border:1px solid rgba(232,99,122,.5);color:#f8a4b4;font-size:.65rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:1rem;}
-.hero-n{font-size:.7rem;font-weight:700;letter-spacing:.3em;color:#ccc;text-transform:uppercase;margin-bottom:.5rem;}
-.hero-n span{color:var(--red);font-size:.85em;font-weight:900;}
-.hero-title{font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:1;font-family:Georgia,serif;text-shadow:2px 2px 4px rgba(0,0,0,.45);letter-spacing:-.02em;margin-bottom:1rem;}
-.hero-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;font-size:.85rem;color:#ccc;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.48);transform:scale(1.06);transition:transform 10s ease;}
+.hero-vignette{position:absolute;inset:0;background:linear-gradient(77deg,rgba(0,0,0,.82) 0,rgba(0,0,0,0) 85%),linear-gradient(180deg,rgba(20,20,20,0) 0,rgba(20,20,20,.12) 20%,rgba(20,20,20,.32) 40%,rgba(20,20,20,.6) 55%,rgba(20,20,20,.82) 70%,#141414 100%);}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:0 var(--px) 6rem;}
+.hero-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(232,99,122,.18);border:1px solid rgba(232,99,122,.5);color:#f8a4b4;font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;padding:.35rem .9rem;border-radius:100px;margin-bottom:.9rem;}
+.hero-n{font-size:.68rem;font-weight:700;letter-spacing:.28em;color:#ccc;text-transform:uppercase;margin-bottom:.45rem;}
+.hero-n em{color:var(--red);font-style:normal;font-size:.82em;font-weight:900;}
+.hero-title{font-size:clamp(3rem,8vw,6.5rem);font-weight:900;line-height:.95;font-family:Georgia,serif;text-shadow:2px 2px 8px rgba(0,0,0,.6);letter-spacing:-.02em;margin-bottom:.9rem;}
+.hero-meta{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem;font-size:.82rem;color:#ccc;}
 .hero-match{color:var(--green);font-weight:700;}
-.hero-badge-a{border:1px solid #aaa;padding:0 4px;font-size:.7rem;font-weight:700;color:#ccc;}
-.hero-hd{border:1px solid #666;padding:0 6px;font-size:.7rem;color:#ccc;}
-.hero-desc{color:#ddd;max-width:440px;line-height:1.7;font-size:.95rem;margin-bottom:1.5rem;}
-.hero-btns{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
-.btn-play{display:flex;align-items:center;gap:.5rem;background:#fff;color:#000;padding:.65rem 1.5rem;border:none;border-radius:4px;font-weight:700;font-size:.95rem;cursor:pointer;transition:background .3s;}
+.hero-badge-a{border:1px solid #999;padding:0 4px;font-size:.68rem;font-weight:700;color:#ccc;}
+.hero-hd{border:1px solid #555;padding:0 5px;font-size:.68rem;color:#ccc;}
+.hero-desc{color:#d8d8d8;max-width:420px;line-height:1.7;font-size:.9rem;margin-bottom:1.4rem;}
+.hero-btns{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+.btn-play{display:flex;align-items:center;gap:.45rem;background:#fff;color:#000;padding:.6rem 1.4rem;border:none;border-radius:4px;font-weight:700;font-size:.9rem;cursor:pointer;transition:background .2s;white-space:nowrap;}
 .btn-play:hover{background:rgba(255,255,255,.8);}
-.btn-info{display:flex;align-items:center;gap:.5rem;background:rgba(109,109,110,.7);color:#fff;padding:.65rem 1.3rem;border:none;border-radius:4px;font-weight:600;font-size:.95rem;cursor:pointer;transition:background .3s;}
+.btn-info{display:flex;align-items:center;gap:.45rem;background:rgba(109,109,110,.65);color:#fff;padding:.6rem 1.2rem;border:none;border-radius:4px;font-weight:600;font-size:.9rem;cursor:pointer;transition:background .2s;white-space:nowrap;}
 .btn-info:hover{background:rgba(109,109,110,.9);}
-.btn-mute{background:none;border:2px solid #aaa;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s;font-size:.9rem;}
+.btn-mute{background:none;border:2px solid #888;color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;font-size:.85rem;flex-shrink:0;}
 .btn-mute:hover{border-color:#fff;}
-@media(max-width:768px){.hero-content{padding:0 1.2rem 4rem;}}
+@media(max-width:768px){.hero-content{padding:0 1.2rem 3.5rem;}}
 
-/* CONTENT AREA */
-#content{position:relative;z-index:10;margin-top:-4rem;background:var(--bg);padding-bottom:6rem;}
+/* ── CONTENT ── */
+#content{position:relative;z-index:10;margin-top:-3.5rem;background:var(--bg);padding-bottom:6rem;}
 
-/* BDAY STRIP */
-.bday-strip{margin:0 4rem 2rem;border-radius:12px;padding:1.5rem 2rem;text-align:center;background:linear-gradient(135deg,rgba(232,99,122,.12),rgba(201,169,110,.08));border:1px solid rgba(232,99,122,.2);}
-.bday-strip .emoji{font-size:1.4rem;margin-bottom:.3rem;}
-.bday-strip h3{font-family:Georgia,serif;font-style:italic;font-size:1.4rem;font-weight:400;margin-bottom:.3rem;}
-.bday-strip p{color:var(--muted);font-size:.85rem;}
+/* ── BDAY STRIP ── */
+.bday-strip{margin:0 var(--px) 2rem;border-radius:10px;padding:1.4rem 2rem;text-align:center;background:linear-gradient(135deg,rgba(232,99,122,.1),rgba(201,169,110,.07));border:1px solid rgba(232,99,122,.18);}
+.bday-strip .emoji{font-size:1.3rem;margin-bottom:.25rem;}
+.bday-strip h3{font-family:Georgia,serif;font-style:italic;font-size:1.35rem;font-weight:400;margin-bottom:.25rem;}
+.bday-strip p{color:var(--muted);font-size:.82rem;}
 @media(max-width:768px){.bday-strip{margin:0 1rem 1.5rem;}}
 
-/* CHAT SECTION */
-.chat-section{margin:0 4rem 2.5rem;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#1a0000 0%,#141414 50%,#001a05 100%);border:1px solid rgba(255,255,255,.06);}
+/* ── CHAT SECTION ── */
+.chat-wrap{margin:0 var(--px) 2.5rem;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#180000 0%,#141414 55%,#001500 100%);border:1px solid rgba(255,255,255,.05);}
 .chat-grid{display:grid;grid-template-columns:1fr 1fr;}
-.chat-left{padding:2.5rem 3rem;}
-.chat-label{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.4rem;}
-.chat-label span{color:var(--red);}
-.chat-left h3{font-family:Georgia,serif;font-size:1.8rem;font-weight:400;margin-bottom:.4rem;}
-.chat-left .sub{color:var(--muted);font-size:.85rem;margin-bottom:2rem;}
-.chat-messages{display:flex;flex-direction:column;gap:.75rem;}
-.chat-msg{display:flex;}
-.chat-msg.him{justify-content:flex-end;}
-.chat-msg.her{justify-content:flex-start;}
-.bubble{max-width:78%;padding:.75rem 1rem;border-radius:18px;font-size:.875rem;line-height:1.5;}
-.bubble.him{background:var(--red);color:#fff;border-bottom-right-radius:4px;}
-.bubble.her{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#ddd;border-bottom-left-radius:4px;}
-.bubble-time{display:block;font-size:.6rem;margin-top:.3rem;opacity:.4;text-align:right;}
-.chat-right{position:relative;min-height:380px;}
-.chat-right img{width:100%;height:100%;object-fit:cover;}
-.chat-right-overlay{position:absolute;inset:0;background:linear-gradient(to right,#141414 0%,transparent 30%);}
-.chat-right-quote{position:absolute;bottom:1.5rem;left:1.5rem;}
-.chat-right-quote p{font-family:Georgia,serif;font-size:1.4rem;font-weight:900;color:#fff;}
-.chat-right-quote small{color:var(--muted);font-size:.8rem;}
-@media(max-width:768px){.chat-section{margin:0 1rem 1.5rem;}.chat-grid{grid-template-columns:1fr;}.chat-right{display:none;}.chat-left{padding:1.5rem;}}
+.chat-left{padding:2.5rem 2.5rem;}
+.chat-lbl{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem;}
+.chat-lbl em{color:var(--red);font-style:normal;}
+.chat-left h3{font-family:Georgia,serif;font-size:1.7rem;font-weight:400;margin-bottom:.35rem;}
+.chat-left .sub{color:var(--muted);font-size:.82rem;margin-bottom:1.8rem;}
+.chat-msgs{display:flex;flex-direction:column;gap:.65rem;}
+.cmsg{display:flex;}
+.cmsg.him{justify-content:flex-end;}
+.cmsg.her{justify-content:flex-start;}
+.bubble{max-width:76%;padding:.7rem 1rem;border-radius:16px;font-size:.85rem;line-height:1.5;}
+.bubble.him{background:var(--red);color:#fff;border-bottom-right-radius:3px;}
+.bubble.her{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#ddd;border-bottom-left-radius:3px;}
+.btime{display:block;font-size:.58rem;margin-top:.25rem;opacity:.38;text-align:right;}
+.chat-right{position:relative;}
+.chat-right img{width:100%;height:100%;object-fit:cover;display:block;}
+.chat-right-ov{position:absolute;inset:0;background:linear-gradient(to right,#141414 0%,rgba(20,20,20,.1) 35%);}
+.chat-right-q{position:absolute;bottom:1.5rem;left:1.5rem;}
+.chat-right-q p{font-family:Georgia,serif;font-size:1.35rem;font-weight:900;}
+.chat-right-q small{color:var(--muted);font-size:.75rem;}
+@media(max-width:768px){
+  .chat-wrap{margin:0 1rem 1.5rem;}
+  .chat-grid{grid-template-columns:1fr;}
+  .chat-right{display:none;}
+  .chat-left{padding:1.5rem;}
+}
 
-/* CARD ROWS */
-.row-section{margin-bottom:2rem;}
-.row-header{display:flex;align-items:center;gap:.5rem;padding:0 4rem;margin-bottom:.75rem;}
-.row-header h2{font-size:1.2rem;font-weight:700;cursor:pointer;transition:color .3s;}
-.row-header h2:hover{color:var(--muted);}
-.row-explore{font-size:.7rem;font-weight:700;letter-spacing:.2em;color:var(--green);opacity:0;transition:opacity .3s;}
-.row-section:hover .row-explore{opacity:1;}
+/* ── CARD ROWS ── */
+.row-sec{margin-bottom:2.2rem;}
+.row-hdr{display:flex;align-items:center;gap:.5rem;padding:0 var(--px);margin-bottom:.7rem;}
+.row-hdr h2{font-size:1.15rem;font-weight:700;cursor:default;}
+.row-explore{font-size:.68rem;font-weight:700;letter-spacing:.2em;color:var(--green);opacity:0;transition:opacity .3s;white-space:nowrap;}
+.row-sec:hover .row-explore{opacity:1;}
 .row-wrap{position:relative;}
-.row-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 4rem;scroll-behavior:smooth;}
+.row-scroll{display:flex;gap:6px;overflow-x:auto;padding:4px var(--px) 8px;scrollbar-width:none;}
 .row-scroll::-webkit-scrollbar{display:none;}
-.row-chevron{position:absolute;top:0;bottom:0;width:48px;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,rgba(20,20,20,.9),transparent);border:none;color:#fff;font-size:1.5rem;cursor:pointer;z-index:10;opacity:0;transition:opacity .3s;}
-.row-chevron.left{left:0;background:linear-gradient(to right,rgba(20,20,20,.9),transparent);}
-.row-chevron.right{right:0;background:linear-gradient(to left,rgba(20,20,20,.9),transparent);}
-.row-section:hover .row-chevron{opacity:1;}
-@media(max-width:768px){.row-header{padding:0 1rem;}.row-scroll{padding:0 1rem;}}
+.row-chev{position:absolute;top:0;bottom:0;width:50px;display:flex;align-items:center;justify-content:center;border:none;color:#fff;font-size:1.6rem;cursor:pointer;z-index:10;opacity:0;transition:opacity .3s;}
+.row-chev.lft{left:0;background:linear-gradient(to right,rgba(20,20,20,.95),transparent);}
+.row-chev.rgt{right:0;background:linear-gradient(to left,rgba(20,20,20,.95),transparent);}
+.row-sec:hover .row-chev{opacity:1;}
+@media(max-width:768px){.row-hdr{padding:0 1rem;}.row-scroll{padding:4px 1rem 8px;}}
 
-/* CARDS */
-.card{flex-shrink:0;width:220px;height:124px;border-radius:4px;overflow:hidden;position:relative;cursor:pointer;transition:transform .3s,z-index .3s;}
-.card:hover{transform:scale(1.08);z-index:20;}
-.card img{width:100%;height:100%;object-fit:cover;}
-.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.6) 100%);transition:background .3s;}
-.card:hover .card-overlay{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.9) 100%);}
-.card-ep{position:absolute;top:6px;left:6px;color:#fff;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:3px;}
-.card-hover-info{position:absolute;bottom:0;left:0;right:0;padding:8px;opacity:0;transform:translateY(6px);transition:all .3s;}
-.card:hover .card-hover-info{opacity:1;transform:translateY(0);}
-.card-hover-title{font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-hover-sub{font-size:.7rem;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-hover-actions{display:flex;align-items:center;gap:6px;margin-top:6px;}
-.card-action-btn{width:24px;height:24px;border-radius:50%;border:1px solid #aaa;background:none;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.65rem;cursor:pointer;transition:border-color .2s;}
-.card-action-btn.white{background:#fff;border-color:#fff;color:#000;}
-.card-action-btn:hover{border-color:#fff;}
-.card-mood{font-size:.65rem;color:var(--muted);margin-top:4px;}
+/* ── CARD ── */
+.card{flex-shrink:0;width:220px;height:124px;border-radius:5px;overflow:hidden;position:relative;cursor:pointer;transition:transform .25s ease,z-index 0s;}
+.card:hover{transform:scale(1.1);z-index:30;}
+/* image card */
+.card-img{width:100%;height:100%;object-fit:cover;display:block;}
+.card-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.65) 100%);transition:background .25s;}
+.card:hover .card-ov{background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.92) 100%);}
+/* text card (no image) */
+.card-txt{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.75rem;text-align:center;position:relative;overflow:hidden;}
+.card-txt-glow{position:absolute;inset:0;opacity:.25;}
+.card-txt-quote{font-family:Georgia,serif;font-style:italic;font-size:.78rem;line-height:1.4;color:#fff;position:relative;z-index:1;}
+.card-txt-title{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.4rem;position:relative;z-index:1;}
+/* ep badge */
+.card-ep{position:absolute;top:5px;left:5px;color:#fff;font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:3px;z-index:2;}
+/* hover info */
+.card-info{position:absolute;bottom:0;left:0;right:0;padding:7px;opacity:0;transform:translateY(5px);transition:all .25s;z-index:2;}
+.card:hover .card-info{opacity:1;transform:none;}
+.ci-title{font-weight:700;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-sub{font-size:.65rem;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.ci-actions{display:flex;align-items:center;gap:4px;margin-top:5px;}
+.ca-btn{width:22px;height:22px;border-radius:50%;border:1px solid #aaa;background:none;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer;}
+.ca-btn.wh{background:#fff;border-color:#fff;color:#000;}
+.ca-btn:hover{border-color:#fff;}
+.ci-match{font-size:.62rem;color:var(--muted);margin-top:3px;}
+.ci-match em{color:var(--green);font-style:normal;font-weight:700;}
 
-/* MODAL */
-#modal{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0;background:rgba(0,0,0,0);transition:background .3s;pointer-events:none;}
-#modal.open{background:rgba(0,0,0,.75);pointer-events:all;}
-.modal-box{width:100%;max-width:760px;background:#141414;border-radius:12px 12px 0 0;transform:translateY(100%);transition:transform .4s cubic-bezier(.23,1,.32,1);max-height:90vh;overflow-y:auto;}
-#modal.open .modal-box{transform:translateY(0);}
-.modal-img{position:relative;height:220px;}
-.modal-img img{width:100%;height:100%;object-fit:cover;}
-.modal-img-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,20,0) 40%,rgba(20,20,20,1) 100%);}
-.modal-close{position:absolute;top:12px;right:12px;background:rgba(20,20,20,.7);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
-.modal-img-btns{position:absolute;bottom:12px;left:12px;display:flex;gap:.5rem;}
-.modal-body{padding:1rem 1.5rem 2rem;}
-.modal-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.8rem;color:#aaa;}
-.modal-match{color:var(--green);font-weight:700;}
-.modal-title{font-family:Georgia,serif;font-size:1.6rem;font-weight:400;margin-bottom:.75rem;}
-.modal-desc{color:#bbb;font-size:.9rem;line-height:1.7;}
-.modal-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;font-size:.7rem;color:#aaa;}
-.modal-tag{border:1px solid #333;padding:2px 8px;border-radius:4px;}
-@media(min-width:768px){#modal{align-items:center;padding:2rem;}.modal-box{border-radius:12px;}}
+/* ── MODAL ── */
+#modal{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;justify-content:center;background:transparent;transition:background .3s;pointer-events:none;}
+#modal.open{background:rgba(0,0,0,.78);pointer-events:all;}
+.modal-box{width:100%;max-width:720px;background:#181818;border-radius:10px 10px 0 0;transform:translateY(100%);transition:transform .38s cubic-bezier(.23,1,.32,1);max-height:88vh;overflow-y:auto;overflow-x:hidden;}
+#modal.open .modal-box{transform:none;}
+.modal-hero{position:relative;height:200px;}
+.modal-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+.modal-hero-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#181818 100%);}
+/* text-only modal hero */
+.modal-hero-txt{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;font-size:1.4rem;color:#fff;text-align:center;padding:1rem;}
+.modal-close{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;z-index:2;}
+.modal-btns{position:absolute;bottom:10px;left:12px;display:flex;gap:.45rem;z-index:2;}
+.modal-body{padding:1rem 1.4rem 2rem;}
+.modal-meta{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-bottom:.45rem;font-size:.78rem;color:#aaa;}
+.mm-match{color:var(--green);font-weight:700;}
+.modal-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:400;margin-bottom:.65rem;}
+.modal-desc{color:#bbb;font-size:.88rem;line-height:1.7;}
+.modal-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.9rem;}
+.m-tag{border:1px solid #333;padding:2px 8px;border-radius:4px;font-size:.68rem;color:#aaa;}
+@media(min-width:769px){#modal{align-items:center;padding:1.5rem;}.modal-box{border-radius:10px;}.modal-hero{height:240px;}}
 
-/* BDAY ENDING */
-.bday-ending{margin:3rem 4rem;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#120008 0%,#0a0a14 50%,#001008 100%);border:1px solid rgba(232,99,122,.2);}
-.bday-ending-inner{padding:3rem 4rem;max-width:680px;margin:0 auto;text-align:center;}
-.ending-label{font-size:.65rem;letter-spacing:.4em;text-transform:uppercase;color:var(--red);margin-bottom:1.2rem;display:block;}
-.ending-title{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:400;font-style:italic;line-height:1.3;margin-bottom:2.5rem;}
-.ending-lines{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;text-align:left;}
-.ending-line{color:#bbb;font-size:.95rem;line-height:1.7;}
-.ending-line span{color:var(--red);}
-.ending-msg{color:#bbb;font-size:.95rem;line-height:1.9;margin-bottom:2rem;}
-.ending-msg strong{color:#fff;font-weight:500;}
-.surprise-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--red),#c2185b);color:#fff;border:none;padding:.8rem 2rem;border-radius:100px;font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:transform .3s,box-shadow .3s;box-shadow:0 0 30px rgba(229,9,20,.3);}
-.surprise-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(229,9,20,.5);}
-.surprise-reveal{margin-top:1.5rem;padding:2rem;border-radius:16px;background:rgba(229,9,20,.08);border:1px solid rgba(229,9,20,.3);display:none;animation:fadeUp .6s ease both;}
-.surprise-reveal.show{display:block;}
-.surprise-emoji{font-size:3rem;margin-bottom:1rem;}
-.surprise-msg-title{font-family:Georgia,serif;font-size:1.5rem;font-style:italic;font-weight:400;margin-bottom:1rem;}
-.surprise-msg-body{color:#bbb;line-height:1.9;font-size:.9rem;max-width:400px;margin:0 auto;}
-.surprise-photo{width:160px;height:160px;object-fit:cover;border-radius:50%;border:2px solid var(--red);box-shadow:0 0 50px rgba(229,9,20,.45);margin:1.5rem auto 0;display:block;}
-@media(max-width:768px){.bday-ending{margin:2rem 1rem;}.bday-ending-inner{padding:2rem 1.5rem;}}
+/* ── BDAY ENDING ── */
+.bday-end{margin:3rem var(--px);border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#150010 0%,#0a0a14 55%,#001208 100%);border:1px solid rgba(232,99,122,.18);}
+.bday-end-inner{padding:3rem;max-width:660px;margin:0 auto;text-align:center;}
+.end-lbl{font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--red);margin-bottom:1.1rem;display:block;}
+.end-title{font-family:Georgia,serif;font-size:clamp(1.7rem,4vw,2.8rem);font-weight:400;font-style:italic;line-height:1.3;margin-bottom:2.2rem;}
+.end-lines{display:flex;flex-direction:column;gap:.65rem;margin-bottom:1.8rem;text-align:left;max-width:460px;margin-left:auto;margin-right:auto;}
+.end-line{color:#bbb;font-size:.92rem;line-height:1.7;}
+.end-line em{color:var(--red);font-style:normal;}
+.end-msg{color:#bbb;font-size:.92rem;line-height:1.9;margin-bottom:2rem;}
+.end-msg strong{color:#fff;font-weight:500;}
+.surp-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--red),#c2185b);color:#fff;border:none;padding:.75rem 1.8rem;border-radius:100px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:transform .3s,box-shadow .3s;box-shadow:0 0 28px rgba(229,9,20,.28);}
+.surp-btn:hover{transform:scale(1.05);box-shadow:0 0 48px rgba(229,9,20,.5);}
+.surp-reveal{margin-top:1.5rem;padding:2rem 1.5rem;border-radius:14px;background:rgba(229,9,20,.07);border:1px solid rgba(229,9,20,.25);display:none;animation:fadeUp .55s ease both;}
+.surp-reveal.show{display:block;}
+.surp-emoji{font-size:2.8rem;margin-bottom:.9rem;}
+.surp-ttl{font-family:Georgia,serif;font-size:1.45rem;font-style:italic;font-weight:400;margin-bottom:.9rem;}
+.surp-body{color:#bbb;line-height:1.9;font-size:.88rem;max-width:380px;margin:0 auto;}
+.surp-photo{width:150px;height:150px;object-fit:cover;border-radius:50%;border:2px solid var(--red);box-shadow:0 0 45px rgba(229,9,20,.42);margin:1.4rem auto 0;display:block;}
+@media(max-width:768px){.bday-end{margin:2rem 1rem;}.bday-end-inner{padding:2rem 1.2rem;}}
 
-/* QUOTES */
-.quotes-section{margin:3rem 4rem;border-radius:12px;padding:4rem 2rem;text-align:center;background:#0a0a0a;border:1px solid rgba(255,255,255,.04);position:relative;overflow:hidden;}
-.quotes-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,var(--red),transparent 70%);opacity:.08;pointer-events:none;}
-.quote-line{font-family:Georgia,serif;font-size:clamp(1.1rem,3vw,2rem);font-weight:300;font-style:italic;color:#bbb;margin-bottom:1rem;position:relative;z-index:1;}
-@media(max-width:768px){.quotes-section{margin:2rem 1rem;}}
+/* ── QUOTES ── */
+.quotes{margin:2.5rem var(--px);border-radius:12px;padding:3.5rem 2rem;text-align:center;background:#0c0c0c;border:1px solid rgba(255,255,255,.04);position:relative;overflow:hidden;}
+.quotes-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,var(--red),transparent 68%);opacity:.07;pointer-events:none;}
+.q-line{font-family:Georgia,serif;font-size:clamp(1rem,2.5vw,1.8rem);font-weight:300;font-style:italic;color:#bbb;margin-bottom:.9rem;position:relative;z-index:1;}
+@media(max-width:768px){.quotes{margin:2rem 1rem;}}
 
-/* CREDITS */
-.credits{padding:5rem 4rem;text-align:center;}
-.credits-badge{display:inline-block;font-size:.65rem;letter-spacing:.5em;text-transform:uppercase;color:var(--red);border:1px solid var(--red);padding:.3rem .9rem;margin-bottom:2rem;}
-.credits-list{display:flex;flex-direction:column;gap:.5rem;color:#555;font-size:.85rem;margin-bottom:4rem;}
-.credits-title{font-family:Georgia,serif;font-size:clamp(2rem,6vw,4rem);font-weight:900;color:#fff;text-shadow:0 0 60px rgba(229,9,20,.3);}
-.credits-sub{color:#555;margin-top:1rem;font-size:.85rem;}
+/* ── CREDITS ── */
+.credits{padding:4rem var(--px);text-align:center;}
+.cred-badge{display:inline-block;font-size:.62rem;letter-spacing:.45em;text-transform:uppercase;color:var(--red);border:1px solid var(--red);padding:.28rem .85rem;margin-bottom:1.8rem;}
+.cred-list{display:flex;flex-direction:column;gap:.4rem;color:#444;font-size:.82rem;margin-bottom:3.5rem;}
+.cred-title{font-family:Georgia,serif;font-size:clamp(2rem,5.5vw,3.8rem);font-weight:900;text-shadow:0 0 55px rgba(229,9,20,.28);}
+.cred-sub{color:#444;margin-top:.9rem;font-size:.82rem;}
 @media(max-width:768px){.credits{padding:3rem 1.5rem;}}
 
-/* FADE IN ON SCROLL */
-.fade-in{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
-.fade-in.visible{opacity:1;transform:translateY(0);}
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s ease;}
+.fi.on{opacity:1;transform:none;}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 </style>
 </head>
 <body>
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo">SJ&GK</div>
-  <div class="loader-dots">
-    <div class="loader-dot"></div>
-    <div class="loader-dot"></div>
-    <div class="loader-dot"></div>
-  </div>
+  <div class="ld-logo">SJ&GK</div>
+  <div class="ld-dots"><div class="ld-dot"></div><div class="ld-dot"></div><div class="ld-dot"></div></div>
 </div>
 
 <!-- INTRO -->
 <div id="intro">
-  <div class="intro-inner">
-    <div class="intro-line" id="introLine"></div>
-    <div class="intro-title" id="introTitle">SJ & GK</div>
-    <div class="intro-sub" id="introSub">An Original Love Story</div>
-    <div class="intro-bday" id="introBday">🎂 Happy Birthday GK ✨</div>
+  <div style="text-align:center;">
+    <div class="intro-bar" id="iBar"></div>
+    <div class="intro-h1" id="iTitle">SJ & GK</div>
+    <div class="intro-p" id="iSub">An Original Love Story</div>
+    <div class="intro-bday" id="iBday">🎂 Happy Birthday GK ✨</div>
   </div>
-  <button id="skip-btn" onclick="skipIntro()">⏭ Skip Intro</button>
+  <button id="skip" onclick="skipIntro()">⏭ Skip Intro</button>
 </div>
 
 <!-- NAV -->
 <nav>
   <div class="nav-logo">SJ&GK</div>
   <div class="nav-links">
-    <span>Home</span>
-    <span>Our Story</span>
-    <span>Milestones</span>
-    <span>New & Upcoming</span>
+    <span>Home</span><span>Our Story</span><span>Milestones</span><span>New &amp; Upcoming</span>
   </div>
   <div class="nav-right">
-    <span style="color:#aaa;cursor:pointer;font-size:1.1rem;">♥</span>
+    <span style="color:#aaa;font-size:1.1rem;cursor:pointer;">♥</span>
     <div class="nav-avatar">S</div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-bg">
-    <img src="Image6.jpg" alt="I Love You" id="heroBg"/>
-  </div>
+  <div class="hero-bg"><img src="Image6.jpg" alt="I Love You" id="heroBg"/></div>
   <div class="hero-vignette"></div>
   <div class="hero-content">
-    <div class="hero-bday-badge">🎂 Happy Birthday GK ✨</div>
-    <div class="hero-n"><span>N</span> Original Series</div>
-    <h1 class="hero-title">SJ & GK</h1>
+    <div class="hero-badge">🎂 Happy Birthday GK ✨</div>
+    <div class="hero-n"><em>N</em> Original Series</div>
+    <h1 class="hero-title">SJ &amp; GK</h1>
     <div class="hero-meta">
       <span class="hero-match">99% Match</span>
       <span class="hero-badge-a">A</span>
@@ -273,26 +274,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <!-- CONTENT -->
 <div id="content">
 
-  <!-- Birthday Strip -->
-  <div class="bday-strip fade-in">
+  <!-- Birthday strip -->
+  <div class="bday-strip fi">
     <div class="emoji">🎂 ✨ 🎉 ✨ 🎂</div>
     <h3>Happy Birthday, GK</h3>
     <p>Of all the days in the year, this one belongs entirely to you.</p>
   </div>
 
-  <!-- Late Night Chats -->
-  <div class="chat-section fade-in">
+  <!-- Chats -->
+  <div class="chat-wrap fi">
     <div class="chat-grid">
       <div class="chat-left">
-        <div class="chat-label"><span>♥</span> 2 AM · Every Night</div>
+        <div class="chat-lbl"><em>♥</em>&nbsp; 2 AM · Every Night</div>
         <h3>Late Night Chats</h3>
         <p class="sub">The conversations nobody else knows about.</p>
-        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-msgs" id="chatMsgs"></div>
       </div>
       <div class="chat-right">
         <img src="Image3.jpg" alt="Late Nights"/>
-        <div class="chat-right-overlay"></div>
-        <div class="chat-right-quote">
+        <div class="chat-right-ov"></div>
+        <div class="chat-right-q">
           <p>"You first."</p>
           <small>— Her, every night</small>
         </div>
@@ -300,116 +301,105 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     </div>
   </div>
 
-  <!-- Card Rows -->
+  <!-- Card rows injected here -->
   <div id="rows"></div>
 
-  <!-- Birthday Ending -->
-  <div class="bday-ending fade-in">
-    <div class="bday-ending-inner">
-      <span class="ending-label">A message from me, to you</span>
-      <h2 class="ending-title">You are the best thing<br/>that happened to me.</h2>
-      <div class="ending-lines" id="endingLines"></div>
-      <p class="ending-msg">On your birthday, I just want you to know one thing —<br/><strong>choosing you, every single day, is the easiest decision I make.</strong></p>
-      <button class="surprise-btn" onclick="revealSurprise()">🎁 Open Your Surprise</button>
-      <div class="surprise-reveal" id="surpriseReveal">
-        <div class="surprise-emoji">🥺❤️</div>
-        <p class="surprise-msg-title">Happy Birthday, GK.</p>
-        <p class="surprise-msg-body">This is not just a website.<br/>This is every moment I never want to forget,<br/>every memory I am proud of,<br/>every reason I fall more in love with you.<br/><br/><strong style="color:#fff;">It's always going to be us. ❤️</strong></p>
-        <img src="finalimage.png" alt="Us" class="surprise-photo"/>
+  <!-- Birthday ending -->
+  <div class="bday-end fi">
+    <div class="bday-end-inner">
+      <span class="end-lbl">A message from me, to you</span>
+      <h2 class="end-title">You are the best thing<br/>that happened to me.</h2>
+      <div class="end-lines" id="endLines"></div>
+      <p class="end-msg">On your birthday, I just want you to know one thing —<br/><strong>choosing you, every single day, is the easiest decision I make.</strong></p>
+      <button class="surp-btn" onclick="revealSurprise()">🎁 Open Your Surprise</button>
+      <div class="surp-reveal" id="surpReveal">
+        <div class="surp-emoji">🥺❤️</div>
+        <p class="surp-ttl">Happy Birthday, GK.</p>
+        <p class="surp-body">This is not just a website.<br/>This is every moment I never want to forget,<br/>every memory I am proud of,<br/>every reason I fall more in love with you.<br/><br/><strong style="color:#fff;">It's always going to be us. ❤️</strong></p>
+        <img src="finalimage.png" alt="Us" class="surp-photo"/>
       </div>
     </div>
   </div>
 
   <!-- Quotes -->
-  <div class="quotes-section fade-in">
+  <div class="quotes fi">
     <div class="quotes-glow"></div>
-    <p class="quote-line">"She became his peace."</p>
-    <p class="quote-line">"Science brought them together."</p>
-    <p class="quote-line">"They didn't just fall in love. They built things together."</p>
+    <p class="q-line">"She became his peace."</p>
+    <p class="q-line">"Science brought them together."</p>
+    <p class="q-line">"They didn't just fall in love. They built things together."</p>
   </div>
 
   <!-- Credits -->
   <div class="credits">
-    <div class="credits-badge">N Original</div>
-    <div class="credits-list">
-      <span>Directed by Love</span>
-      <span>Written by Fate</span>
-      <span>Research by SJ & GK</span>
-      <span>Starring Sujal & GK</span>
+    <div class="cred-badge">N Original</div>
+    <div class="cred-list">
+      <span>Directed by Love</span><span>Written by Fate</span>
+      <span>Research by SJ &amp; GK</span><span>Starring Sujal &amp; GK</span>
       <span>Music by Late Night Conversations</span>
     </div>
-    <h2 class="credits-title">To Be Continued...</h2>
-    <p class="credits-sub">More memories. More papers. More cities. More us.</p>
+    <h2 class="cred-title">To Be Continued...</h2>
+    <p class="cred-sub">More memories. More papers. More cities. More us.</p>
   </div>
-
 </div>
 
 <!-- MODAL -->
 <div id="modal" onclick="closeModal(event)">
   <div class="modal-box">
-    <div class="modal-img">
-      <img id="modalImg" src="" alt=""/>
-      <div class="modal-img-overlay"></div>
-      <button class="modal-close" onclick="closeModalBtn()">✕</button>
-      <div class="modal-img-btns">
-        <button class="btn-play" style="padding:.5rem 1.2rem;font-size:.85rem;">▶ Play</button>
-        <button class="card-action-btn" style="width:32px;height:32px;">+</button>
-        <button class="card-action-btn" style="width:32px;height:32px;">♥</button>
-      </div>
-    </div>
+    <div class="modal-hero" id="mHero"></div>
     <div class="modal-body">
       <div class="modal-meta">
-        <span class="modal-match">99% Match</span>
-        <span id="modalTitle2" style="color:#aaa;"></span>
-        <span id="modalDuration" style="border:1px solid #555;padding:0 4px;font-size:.7rem;"></span>
-        <span style="border:1px solid #555;padding:0 4px;font-size:.7rem;">HD</span>
+        <span class="mm-match">99% Match</span>
+        <span id="mTitle2" style="color:#aaa;font-size:.78rem;"></span>
+        <span id="mDur" style="border:1px solid #444;padding:0 4px;font-size:.65rem;color:#aaa;"></span>
+        <span style="border:1px solid #444;padding:0 4px;font-size:.65rem;color:#aaa;">HD</span>
       </div>
-      <h2 class="modal-title" id="modalSubtitle"></h2>
-      <p class="modal-desc" id="modalDesc"></p>
-      <div class="modal-tags" id="modalTags"></div>
+      <h2 class="modal-title" id="mSub"></h2>
+      <p class="modal-desc" id="mDesc"></p>
+      <div class="modal-tags" id="mTags"></div>
     </div>
   </div>
 </div>
 
 <script>
-const timeline = [
-  { title:"October 2025", subtitle:"The First Hi", description:"The first 'Hi' from you never felt normal. Every message from you felt electrifying.", image:"Image1.jpg", genre:"Origin Story", mood:"Electric", duration:"∞" },
-  { title:"Diwali Hunt Game", subtitle:"10 Chances", description:"The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.", image:"Image2.jpg", genre:"Romance", mood:"Playful", duration:"1 night" },
-  { title:"Oct – Nov 2025", subtitle:"Sleepless Nights", description:"The girl who never stayed awake for anyone stayed awake entire nights talking to me.", image:"Image3.jpg", genre:"Drama", mood:"Tender", duration:"Weeks" },
-  { title:"The MEDHA Night", subtitle:"Trust", description:"The night you slowly started opening up to me. A trust I never want to break.", image:"Image4.jpg", genre:"Drama", mood:"Intimate", duration:"1 night" },
-  { title:"The Liking Phase", subtitle:"From Like to Love", description:"'I like you' slowly becoming 'I love you'.", image:"Image5.jpg", genre:"Romance", mood:"Warm", duration:"Weeks" },
-  { title:"4th December 2025", subtitle:"I Love You", description:"The first proper 'I love you'.", image:"Image6.jpg", genre:"Romance", mood:"Euphoric", duration:"Forever" },
-  { title:"12th January 2026", subtitle:"First Kiss", description:"Our first room meet. Our first kiss.", image:"Image7.jpg", genre:"Romance", mood:"Magical", duration:"1 afternoon" },
-  { title:"24th January 2026", subtitle:"ICRTB Conference", description:"My baby wins ICRTB conference. Proud of you beyond words.", image:"Image8.jpg", genre:"Achievement", mood:"Proud", duration:"1 day" },
-  { title:"26th January 2026", subtitle:"Crazy Cheesy Café", description:"Our first date at Crazy Cheesy Café.", image:"Image9.jpg", genre:"Romance", mood:"Butterflies", duration:"1 evening" },
-  { title:"31st January 2026", subtitle:"First Project Together", description:"Our first project together.", image:"Image10.jpg", genre:"Partnership", mood:"Focused", duration:"Days" },
-  { title:"5th February 2026", subtitle:"Book Chapter", description:"Our first book chapter together. One of the moments that made me realize how beautifully we grow together.", image:"Image11.png", genre:"Milestone", mood:"Growth", duration:"Weeks" },
-  { title:"13th February 2026", subtitle:"The Dress", description:"You wore a special dress for me and waited for me despite my late bus.", image:"Image12.jpg", genre:"Romance", mood:"Heart-melting", duration:"1 evening" },
-  { title:"20th February 2026", subtitle:"Testing Day", description:"First testing day together.", image:"Image13.jpg", genre:"Partnership", mood:"Together", duration:"1 day" },
-  { title:"Another Book Chapter", subtitle:"A Great Team", description:"Another milestone we created together — proof that we make a pretty great team.", image:"Image14.png", genre:"Milestone", mood:"Accomplished", duration:"Weeks" },
-  { title:"25th February 2026", subtitle:"Birthday Gift", description:"The handmade birthday gift you made for me. I still can't believe you made that with your hands.", image:"Image15.jpg", genre:"Love", mood:"Cherished", duration:"Forever" },
-  { title:"8th March 2026", subtitle:"Sea Girl", description:"My little sea girl.", image:"Image16.jpg", genre:"Romance", mood:"Free", duration:"1 day" },
-  { title:"2nd April 2026", subtitle:"Poha Date", description:"The poha date. The first time I cooked for you.", image:"Image17.jpg", genre:"Romance", mood:"Cozy", duration:"1 morning" },
-  { title:"15th April 2026", subtitle:"Mumbai Trip", description:"Our Mumbai trip. The train conversation changed me forever.", image:"Image18.jpg", genre:"Adventure", mood:"Life-changing", duration:"Days" },
-  { title:"Internship Arc", subtitle:"Dreams Coming True", description:"We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK got into JNU Delhi.", image:"Image19.jpg", genre:"Achievement", mood:"Victorious", duration:"Months" },
-  { title:"Coming Soon", subtitle:"SJ & GK Research Paper", description:"Soon we begin writing our first research paper together — the first official research story of SJ and GK.", image:"Image20.jpg", genre:"Future", mood:"Hopeful", duration:"∞" },
-];
-
 const GENRE_COLORS = {
-  "Origin Story":"#e50914", Romance:"#e50914", Drama:"#b91c1c",
-  Achievement:"#ca8a04", Partnership:"#15803d", Milestone:"#7c3aed",
-  Love:"#db2777", Adventure:"#0891b2", Future:"#6366f1"
+  "Origin Story":"#e50914",Romance:"#e50914",Drama:"#b91c1c",
+  Achievement:"#ca8a04",Partnership:"#15803d",Milestone:"#7c3aed",
+  Love:"#db2777",Adventure:"#0891b2",Future:"#6366f1"
 };
 
+// noImage = true means card shows styled text quote instead of broken img
+const timeline = [
+  { title:"October 2025",      subtitle:"The First Hi",          description:"The first 'Hi' from you never felt normal. Every message from you felt electrifying.",                                              image:null,         quote:"The first Hi that changed everything.",                      genre:"Origin Story", mood:"Electric",      duration:"∞"          },
+  { title:"Diwali Hunt Game",  subtitle:"10 Chances",            description:"The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.",                image:null,         quote:"10 chances. I still chose wrong — but right.",               genre:"Romance",      mood:"Playful",       duration:"1 night"    },
+  { title:"Oct – Nov 2025",    subtitle:"Sleepless Nights",      description:"The girl who never stayed awake for anyone stayed awake entire nights talking to me.",                                             image:"Image3.jpg", quote:"She stayed up. For the first time.",                         genre:"Drama",        mood:"Tender",        duration:"Weeks"      },
+  { title:"The MEDHA Night",   subtitle:"Trust",                 description:"The night you slowly started opening up to me. A trust I never want to break.",                                                    image:null,         quote:"The night trust was born.",                                  genre:"Drama",        mood:"Intimate",      duration:"1 night"    },
+  { title:"The Liking Phase",  subtitle:"From Like to Love",     description:"'I like you' slowly becoming 'I love you'.",                                                                                       image:null,         quote:"'I like you.' Then one day — 'I love you.'",                 genre:"Romance",      mood:"Warm",          duration:"Weeks"      },
+  { title:"4th Dec 2025",      subtitle:"I Love You",            description:"The first proper 'I love you'.",                                                                                                   image:"Image6.jpg", quote:"The first proper I love you.",                               genre:"Romance",      mood:"Euphoric",      duration:"Forever"    },
+  { title:"12th Jan 2026",     subtitle:"First Kiss",            description:"Our first room meet. Our first kiss.",                                                                                             image:"Image7.jpg", quote:"Our first room meet. Our first kiss.",                       genre:"Romance",      mood:"Magical",       duration:"1 afternoon"},
+  { title:"24th Jan 2026",     subtitle:"ICRTB Conference",      description:"My baby wins ICRTB conference. Proud of you beyond words.",                                                                        image:"Image8.jpg", quote:"She won. I was the proudest person in the room.",            genre:"Achievement",  mood:"Proud",         duration:"1 day"      },
+  { title:"26th Jan 2026",     subtitle:"Crazy Cheesy Café",     description:"Our first date at Crazy Cheesy Café.",                                                                                             image:"Image9.jpg", quote:"Our first date. Crazy Cheesy Café.",                         genre:"Romance",      mood:"Butterflies",   duration:"1 evening"  },
+  { title:"31st Jan 2026",     subtitle:"First Project",         description:"Our first project together.",                                                                                                      image:"Image10.jpg",quote:"The first time we built something together.",                genre:"Partnership",  mood:"Focused",       duration:"Days"       },
+  { title:"5th Feb 2026",      subtitle:"Book Chapter",          description:"Our first book chapter together. One of the moments that made me realize how beautifully we grow together.",                      image:"Image11.png",quote:"Our names on the same chapter.",                          genre:"Milestone",    mood:"Growth",        duration:"Weeks"      },
+  { title:"13th Feb 2026",     subtitle:"The Dress",             description:"You wore a special dress for me and waited for me despite my late bus.",                                                          image:"Image12.jpg",quote:"She waited. Even when the bus was late.",                   genre:"Romance",      mood:"Heart-melting", duration:"1 evening"  },
+  { title:"20th Feb 2026",     subtitle:"Testing Day",           description:"First testing day together.",                                                                                                      image:"Image13.jpg",quote:"First testing day. Together.",                             genre:"Partnership",  mood:"Together",      duration:"1 day"      },
+  { title:"Another Chapter",   subtitle:"A Great Team",          description:"Another milestone we created together — proof that we make a pretty great team.",                                                  image:"Image14.png",quote:"Proof we make a pretty great team.",                       genre:"Milestone",    mood:"Accomplished",  duration:"Weeks"      },
+  { title:"25th Feb 2026",     subtitle:"Birthday Gift",         description:"The handmade birthday gift you made for me. I still can't believe you made that with your hands.",                                image:"Image15.jpg",quote:"She made it with her own hands.",                         genre:"Love",         mood:"Cherished",     duration:"Forever"    },
+  { title:"8th Mar 2026",      subtitle:"Sea Girl",              description:"My little sea girl.",                                                                                                              image:"Image16.jpg",quote:"My little sea girl.",                                    genre:"Romance",      mood:"Free",          duration:"1 day"      },
+  { title:"2nd Apr 2026",      subtitle:"Poha Date",             description:"The poha date. The first time I cooked for you.",                                                                                 image:"Image17.jpg",quote:"The first time I cooked for her.",                         genre:"Romance",      mood:"Cozy",          duration:"1 morning"  },
+  { title:"15th Apr 2026",     subtitle:"Mumbai Trip",           description:"Our Mumbai trip. The train conversation changed me forever.",                                                                      image:"Image18.jpg",quote:"The train conversation that changed me.",                   genre:"Adventure",    mood:"Life-changing", duration:"Days"       },
+  { title:"Internship Arc",    subtitle:"Dreams Coming True",    description:"We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK into JNU Delhi.", image:"Image19.jpg",quote:"IISc Bangalore. JNU Delhi. We made it.",    genre:"Achievement",  mood:"Victorious",    duration:"Months"     },
+  { title:"Coming Soon",       subtitle:"SJ & GK Research Paper",description:"Soon we begin writing our first research paper together — the first official research story of SJ and GK.",                      image:null,         quote:"Our first research paper together. Coming soon.",             genre:"Future",       mood:"Hopeful",       duration:"∞"          },
+];
+
 const chats = [
-  { who:"him", text:"Phir meri photo 📸", time:"2:14 AM" },
-  { who:"her", text:"Haa haa bhejti hu sone de pahele sabko 😌", time:"2:15 AM" },
-  { who:"him", text:"Yayyyyyyyy 🥹", time:"2:15 AM" },
-  { who:"her", text:"awwww mu cutieee 🥺❤️", time:"2:16 AM" },
-  { who:"him", text:"Reached home?", time:"11:48 PM" },
-  { who:"her", text:"No, still talking to you.", time:"11:49 PM" },
-  { who:"him", text:"Sleep now.", time:"11:50 PM" },
-  { who:"her", text:"You first. 🙃", time:"11:50 PM" },
+  {who:"him", text:"Phir meri photo 📸", time:"2:14 AM"},
+  {who:"her", text:"Haa haa bhejti hu sone de pahele sabko 😌", time:"2:15 AM"},
+  {who:"him", text:"Yayyyyyyyy 🥹", time:"2:15 AM"},
+  {who:"her", text:"awwww mu cutieee 🥺❤️", time:"2:16 AM"},
+  {who:"him", text:"Reached home?", time:"11:48 PM"},
+  {who:"her", text:"No, still talking to you.", time:"11:49 PM"},
+  {who:"him", text:"Sleep now.", time:"11:50 PM"},
+  {who:"her", text:"You first. 🙃", time:"11:50 PM"},
 ];
 
 const endingLines = [
@@ -420,135 +410,154 @@ const endingLines = [
   "You grew with me — in labs, in papers, in life.",
 ];
 
-const rows = [
-  { title:"Because You Love Romance", filter: t => t.genre === "Romance" },
-  { title:"Continue Watching Our Story", filter: (t,i) => i >= 10 && i <= 16 },
-  { title:"Milestones & Achievements", filter: t => ["Milestone","Achievement"].includes(t.genre) },
-  { title:"All Episodes — SJ & GK", filter: () => true },
+const rowDefs = [
+  { title:"Because You Love Romance",    icon:"♥", filter:(t)=> t.genre==="Romance" },
+  { title:"Continue Watching Our Story", icon:"▶", filter:(_,i)=> i>=10 && i<=16 },
+  { title:"Milestones & Achievements",   icon:"★", filter:(t)=> ["Milestone","Achievement"].includes(t.genre) },
+  { title:"All Episodes — SJ & GK",      icon:"✦", filter:()=> true },
 ];
 
-/* ---- BUILD CHATS ---- */
-const chatEl = document.getElementById('chatMessages');
+/* build chats */
+const chatEl = document.getElementById('chatMsgs');
 chats.forEach(c => {
-  chatEl.innerHTML += `<div class="chat-msg ${c.who}">
-    <div class="bubble ${c.who}">
-      ${c.text}
-      <span class="bubble-time">${c.time}</span>
-    </div>
-  </div>`;
+  chatEl.innerHTML += `<div class="cmsg ${c.who}"><div class="bubble ${c.who}">${c.text}<span class="btime">${c.time}</span></div></div>`;
 });
 
-/* ---- BUILD ENDING LINES ---- */
-const elEl = document.getElementById('endingLines');
-endingLines.forEach(l => {
-  elEl.innerHTML += `<p class="ending-line"><span>✦</span> ${l}</p>`;
-});
+/* build ending lines */
+const elEl = document.getElementById('endLines');
+endingLines.forEach(l => { elEl.innerHTML += `<p class="end-line"><em>✦</em> ${l}</p>`; });
 
-/* ---- BUILD CARD ROWS ---- */
+/* build card html */
+function buildCard(item, idx) {
+  const col = GENRE_COLORS[item.genre] || '#e50914';
+  const ep = 'E' + String(idx+1).padStart(2,'0');
+  let inner;
+  if (item.image) {
+    inner = `
+      <img class="card-img" src="${item.image}" alt="${item.subtitle}" loading="lazy"/>
+      <div class="card-ov"></div>`;
+  } else {
+    inner = `
+      <div class="card-txt" style="background:linear-gradient(135deg,${col}22,#0a0a0a);">
+        <div class="card-txt-glow" style="background:radial-gradient(circle at 50% 40%,${col},transparent 70%);"></div>
+        <div class="card-txt-quote">${item.quote}</div>
+        <div class="card-txt-title">${item.title}</div>
+      </div>`;
+  }
+  return `
+    <div class="card" onclick="openModal(${idx})">
+      ${inner}
+      <div class="card-ep" style="background:${col}">${ep}</div>
+      <div class="card-info">
+        <div class="ci-title">${item.subtitle}</div>
+        <div class="ci-sub">${item.title}</div>
+        <div class="ci-actions">
+          <button class="ca-btn wh">▶</button>
+          <button class="ca-btn">+</button>
+          <button class="ca-btn">♥</button>
+        </div>
+        <div class="ci-match"><em>99% Match</em> · ${item.mood}</div>
+      </div>
+    </div>`;
+}
+
+/* build rows */
 const rowsEl = document.getElementById('rows');
-rows.forEach(row => {
-  const items = timeline.map((t,i) => ({...t, idx:i})).filter((t,i) => row.filter(t,i));
-  const id = 'row_' + Math.random().toString(36).slice(2);
+rowDefs.forEach(row => {
+  const items = timeline.map((t,i)=>({...t,idx:i})).filter((t,i)=>row.filter(t,i));
+  const id = 'r' + Math.random().toString(36).slice(2,8);
   rowsEl.innerHTML += `
-  <div class="row-section">
-    <div class="row-header">
-      <h2>${row.title}</h2>
+  <div class="row-sec">
+    <div class="row-hdr">
+      <h2>${row.icon} ${row.title}</h2>
       <span class="row-explore">Explore All ›</span>
     </div>
     <div class="row-wrap">
-      <button class="row-chevron left" onclick="scrollRow('${id}',-1)">‹</button>
-      <div class="row-scroll" id="${id}">
-        ${items.map(item => `
-          <div class="card" onclick="openModal(${item.idx})">
-            <img src="${item.image}" alt="${item.subtitle}" loading="lazy"/>
-            <div class="card-overlay"></div>
-            <div class="card-ep" style="background:${GENRE_COLORS[item.genre]||'#e50914'}">E${String(item.idx+1).padStart(2,'0')}</div>
-            <div class="card-hover-info">
-              <div class="card-hover-title">${item.subtitle}</div>
-              <div class="card-hover-sub">${item.title}</div>
-              <div class="card-hover-actions">
-                <button class="card-action-btn white">▶</button>
-                <button class="card-action-btn">+</button>
-                <button class="card-action-btn">♥</button>
-              </div>
-              <div class="card-mood"><span style="color:#46d369;font-weight:700;">99% Match</span> · ${item.mood}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <button class="row-chevron right" onclick="scrollRow('${id}',1)">›</button>
+      <button class="row-chev lft" onclick="scrollRow('${id}',-1)">‹</button>
+      <div class="row-scroll" id="${id}">${items.map(item=>buildCard(item,item.idx)).join('')}</div>
+      <button class="row-chev rgt" onclick="scrollRow('${id}',1)">›</button>
     </div>
   </div>`;
 });
 
-function scrollRow(id, dir) {
-  document.getElementById(id).scrollBy({ left: dir * 320, behavior: 'smooth' });
-}
+function scrollRow(id, dir) { document.getElementById(id).scrollBy({left:dir*320,behavior:'smooth'}); }
 
-/* ---- MODAL ---- */
+/* modal */
 function openModal(idx) {
-  const item = timeline[idx];
-  document.getElementById('modalImg').src = item.image;
-  document.getElementById('modalTitle2').textContent = item.title;
-  document.getElementById('modalDuration').textContent = item.duration;
-  document.getElementById('modalSubtitle').textContent = item.subtitle;
-  document.getElementById('modalDesc').textContent = item.description;
-  document.getElementById('modalTags').innerHTML =
-    `<span class="modal-tag" style="color:${GENRE_COLORS[item.genre]||'#e50914'}">${item.genre}</span>
-     <span class="modal-tag">${item.mood}</span>
-     <span class="modal-tag">Episode ${idx+1} of 20</span>`;
+  const t = timeline[idx];
+  const col = GENRE_COLORS[t.genre]||'#e50914';
+  const mh = document.getElementById('mHero');
+  if (t.image) {
+    mh.innerHTML = `
+      <img src="${t.image}" alt="${t.subtitle}" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div class="modal-hero-ov"></div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      <div class="modal-btns">
+        <button class="btn-play" style="padding:.45rem 1.1rem;font-size:.82rem;">▶ Play</button>
+        <button class="ca-btn" style="width:28px;height:28px;">+</button>
+        <button class="ca-btn" style="width:28px;height:28px;">♥</button>
+      </div>`;
+  } else {
+    mh.innerHTML = `
+      <div class="modal-hero-txt" style="background:linear-gradient(135deg,${col}22,#0a0a0a);">${t.quote}</div>
+      <button class="modal-close" onclick="closeModalBtn()" style="position:absolute;top:10px;right:10px;">✕</button>
+      <div class="modal-btns">
+        <button class="btn-play" style="padding:.45rem 1.1rem;font-size:.82rem;">▶ Play</button>
+        <button class="ca-btn" style="width:28px;height:28px;">+</button>
+        <button class="ca-btn" style="width:28px;height:28px;">♥</button>
+      </div>`;
+  }
+  document.getElementById('mTitle2').textContent = t.title;
+  document.getElementById('mDur').textContent = t.duration;
+  document.getElementById('mSub').textContent = t.subtitle;
+  document.getElementById('mDesc').textContent = t.description;
+  document.getElementById('mTags').innerHTML =
+    `<span class="m-tag" style="color:${col}">${t.genre}</span>
+     <span class="m-tag">${t.mood}</span>
+     <span class="m-tag">Episode ${idx+1} of 20</span>`;
   document.getElementById('modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-function closeModal(e) { if(e.target === document.getElementById('modal')) closeModalBtn(); }
-function closeModalBtn() {
-  document.getElementById('modal').classList.remove('open');
-  document.body.style.overflow = '';
+function closeModal(e){ if(e.target===document.getElementById('modal')) closeModalBtn(); }
+function closeModalBtn(){ document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+
+/* surprise */
+function revealSurprise(){
+  document.getElementById('surpReveal').classList.add('show');
+  document.querySelector('.surp-btn').style.display='none';
 }
 
-/* ---- SURPRISE ---- */
-function revealSurprise() {
-  const el = document.getElementById('surpriseReveal');
-  el.classList.add('show');
-  document.querySelector('.surprise-btn').style.display = 'none';
-}
+/* mute */
+let muted=true;
+function toggleMute(){ muted=!muted; document.getElementById('muteBtn').textContent=muted?'🔇':'🔊'; }
 
-/* ---- MUTE ---- */
-let muted = true;
-function toggleMute() {
-  muted = !muted;
-  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
-}
-
-/* ---- LOADER ---- */
-window.addEventListener('load', () => {
-  setTimeout(() => {
+/* loader + intro */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
     document.getElementById('loader').classList.add('hide');
-    setTimeout(() => document.getElementById('loader').remove(), 900);
-    // start intro
-    setTimeout(() => document.getElementById('introLine').classList.add('grow'), 100);
-    setTimeout(() => document.getElementById('introTitle').classList.add('show'), 900);
-    setTimeout(() => document.getElementById('introSub').classList.add('show'), 1900);
-    setTimeout(() => document.getElementById('introBday').classList.add('show'), 2500);
-    setTimeout(() => skipIntro(), 5500);
-  }, 2200);
+    setTimeout(()=>{ const l=document.getElementById('loader'); if(l) l.remove(); },900);
+    setTimeout(()=>document.getElementById('iBar').classList.add('go'),100);
+    setTimeout(()=>document.getElementById('iTitle').classList.add('show'),900);
+    setTimeout(()=>document.getElementById('iSub').classList.add('show'),1900);
+    setTimeout(()=>document.getElementById('iBday').classList.add('show'),2500);
+    setTimeout(skipIntro,5500);
+  },2200);
 });
-
-function skipIntro() {
-  document.getElementById('intro').classList.add('hide');
-  setTimeout(() => { const el = document.getElementById('intro'); if(el) el.remove(); }, 1100);
+function skipIntro(){
+  const el=document.getElementById('intro');
+  if(!el) return;
+  el.classList.add('hide');
+  setTimeout(()=>{ if(el.parentNode) el.remove(); },1100);
 }
 
-/* ---- SCROLL FADE IN ---- */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+/* scroll fade */
+const obs=new IntersectionObserver(en=>{ en.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('on'); }); },{threshold:.1});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
 
-/* ---- HERO PARALLAX ---- */
-window.addEventListener('scroll', () => {
-  const bg = document.getElementById('heroBg');
-  if(bg) bg.style.transform = `scale(1.05) translateY(${window.scrollY * 0.3}px)`;
+/* hero parallax */
+window.addEventListener('scroll',()=>{
+  const bg=document.getElementById('heroBg');
+  if(bg) bg.style.transform=`scale(1.06) translateY(${window.scrollY*.25}px)`;
 });
 </script>
 </body>
