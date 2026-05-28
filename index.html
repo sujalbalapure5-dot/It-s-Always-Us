@@ -1,497 +1,555 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import {
-  ChevronLeft, ChevronRight, Heart, Play, Plus, SkipForward,
-  Star, X, Sparkles, MessageCircleHeart, Volume2, VolumeX, Info, ThumbsUp,
-} from "lucide-react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SJ & GK — An Original Love Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#e50914;--red-glow:rgba(229,9,20,0.4);--red-dim:rgba(229,9,20,0.15);
+  --bg:#141414;--surface:#1f1f1f;--text:#fff;--muted:#aaa;--green:#46d369;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
 
+/* SCROLLBAR */
+::-webkit-scrollbar{height:4px;width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:4px;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.8s;}
+#loader.hide{opacity:0;pointer-events:none;}
+.loader-logo{font-size:3rem;font-weight:900;color:var(--red);letter-spacing:-2px;font-family:Georgia,serif;animation:loaderPop 0.6s ease both;}
+.loader-dots{display:flex;gap:6px;margin-top:3rem;}
+.loader-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:dotPulse 1.2s ease infinite;}
+.loader-dot:nth-child(2){animation-delay:.2s;}
+.loader-dot:nth-child(3){animation-delay:.4s;}
+@keyframes loaderPop{from{opacity:0;transform:scale(.5);}to{opacity:1;transform:scale(1);}}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.4;}50%{transform:scale(1.5);opacity:1;}}
+
+/* INTRO */
+#intro{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9998;transition:opacity 1s;}
+#intro.hide{opacity:0;pointer-events:none;}
+.intro-inner{text-align:center;}
+.intro-line{width:0;height:4px;background:var(--red);margin:0 auto 1.5rem;transition:width 1.8s cubic-bezier(.23,1,.32,1);}
+.intro-line.grow{width:240px;}
+.intro-title{font-size:clamp(2.5rem,8vw,5rem);font-weight:900;color:#fff;font-family:Georgia,serif;opacity:0;transform:translateY(20px);transition:all .8s .8s;}
+.intro-title.show{opacity:1;transform:translateY(0);}
+.intro-sub{margin-top:.75rem;font-size:.75rem;letter-spacing:.4em;text-transform:uppercase;color:#666;opacity:0;transition:opacity .8s 1.8s;}
+.intro-sub.show{opacity:1;}
+.intro-bday{margin-top:.5rem;font-size:.9rem;color:#f8a4b4;opacity:0;transition:opacity .8s 2.4s;}
+.intro-bday.show{opacity:1;}
+#skip-btn{position:absolute;right:2rem;top:2rem;background:none;border:none;color:#666;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:color .3s;}
+#skip-btn:hover{color:#fff;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 4rem;background:linear-gradient(180deg,rgba(20,20,20,.9) 0%,transparent 100%);}
+.nav-logo{font-size:1.5rem;font-weight:900;color:var(--red);letter-spacing:-1px;font-family:Arial Black,sans-serif;}
+.nav-links{display:flex;gap:1.5rem;font-size:.85rem;color:#aaa;}
+.nav-links span{cursor:pointer;transition:color .3s;}
+.nav-links span:first-child,.nav-links span:hover{color:#fff;font-weight:600;}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.nav-avatar{width:32px;height:32px;border-radius:4px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;cursor:pointer;}
+@media(max-width:768px){nav{padding:1rem 1.2rem;}.nav-links{display:none;}}
+
+/* HERO */
+#hero{position:relative;height:95vh;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.5);transform:scale(1.05);transition:transform 8s ease;}
+.hero-vignette{position:absolute;inset:0;background:linear-gradient(77deg,rgba(0,0,0,.8) 0,rgba(0,0,0,0) 85%),linear-gradient(180deg,rgba(20,20,20,0) 0,rgba(20,20,20,.15) 20%,rgba(20,20,20,.35) 40%,rgba(20,20,20,.58) 55%,rgba(20,20,20,.78) 69%,rgba(20,20,20,.97) 90%);}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:0 4rem 7rem;}
+.hero-bday-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(232,99,122,.2);border:1px solid rgba(232,99,122,.5);color:#f8a4b4;font-size:.65rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:1rem;}
+.hero-n{font-size:.7rem;font-weight:700;letter-spacing:.3em;color:#ccc;text-transform:uppercase;margin-bottom:.5rem;}
+.hero-n span{color:var(--red);font-size:.85em;font-weight:900;}
+.hero-title{font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:1;font-family:Georgia,serif;text-shadow:2px 2px 4px rgba(0,0,0,.45);letter-spacing:-.02em;margin-bottom:1rem;}
+.hero-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;font-size:.85rem;color:#ccc;}
+.hero-match{color:var(--green);font-weight:700;}
+.hero-badge-a{border:1px solid #aaa;padding:0 4px;font-size:.7rem;font-weight:700;color:#ccc;}
+.hero-hd{border:1px solid #666;padding:0 6px;font-size:.7rem;color:#ccc;}
+.hero-desc{color:#ddd;max-width:440px;line-height:1.7;font-size:.95rem;margin-bottom:1.5rem;}
+.hero-btns{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.btn-play{display:flex;align-items:center;gap:.5rem;background:#fff;color:#000;padding:.65rem 1.5rem;border:none;border-radius:4px;font-weight:700;font-size:.95rem;cursor:pointer;transition:background .3s;}
+.btn-play:hover{background:rgba(255,255,255,.8);}
+.btn-info{display:flex;align-items:center;gap:.5rem;background:rgba(109,109,110,.7);color:#fff;padding:.65rem 1.3rem;border:none;border-radius:4px;font-weight:600;font-size:.95rem;cursor:pointer;transition:background .3s;}
+.btn-info:hover{background:rgba(109,109,110,.9);}
+.btn-mute{background:none;border:2px solid #aaa;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s;font-size:.9rem;}
+.btn-mute:hover{border-color:#fff;}
+@media(max-width:768px){.hero-content{padding:0 1.2rem 4rem;}}
+
+/* CONTENT AREA */
+#content{position:relative;z-index:10;margin-top:-4rem;background:var(--bg);padding-bottom:6rem;}
+
+/* BDAY STRIP */
+.bday-strip{margin:0 4rem 2rem;border-radius:12px;padding:1.5rem 2rem;text-align:center;background:linear-gradient(135deg,rgba(232,99,122,.12),rgba(201,169,110,.08));border:1px solid rgba(232,99,122,.2);}
+.bday-strip .emoji{font-size:1.4rem;margin-bottom:.3rem;}
+.bday-strip h3{font-family:Georgia,serif;font-style:italic;font-size:1.4rem;font-weight:400;margin-bottom:.3rem;}
+.bday-strip p{color:var(--muted);font-size:.85rem;}
+@media(max-width:768px){.bday-strip{margin:0 1rem 1.5rem;}}
+
+/* CHAT SECTION */
+.chat-section{margin:0 4rem 2.5rem;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#1a0000 0%,#141414 50%,#001a05 100%);border:1px solid rgba(255,255,255,.06);}
+.chat-grid{display:grid;grid-template-columns:1fr 1fr;}
+.chat-left{padding:2.5rem 3rem;}
+.chat-label{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.4rem;}
+.chat-label span{color:var(--red);}
+.chat-left h3{font-family:Georgia,serif;font-size:1.8rem;font-weight:400;margin-bottom:.4rem;}
+.chat-left .sub{color:var(--muted);font-size:.85rem;margin-bottom:2rem;}
+.chat-messages{display:flex;flex-direction:column;gap:.75rem;}
+.chat-msg{display:flex;}
+.chat-msg.him{justify-content:flex-end;}
+.chat-msg.her{justify-content:flex-start;}
+.bubble{max-width:78%;padding:.75rem 1rem;border-radius:18px;font-size:.875rem;line-height:1.5;}
+.bubble.him{background:var(--red);color:#fff;border-bottom-right-radius:4px;}
+.bubble.her{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#ddd;border-bottom-left-radius:4px;}
+.bubble-time{display:block;font-size:.6rem;margin-top:.3rem;opacity:.4;text-align:right;}
+.chat-right{position:relative;min-height:380px;}
+.chat-right img{width:100%;height:100%;object-fit:cover;}
+.chat-right-overlay{position:absolute;inset:0;background:linear-gradient(to right,#141414 0%,transparent 30%);}
+.chat-right-quote{position:absolute;bottom:1.5rem;left:1.5rem;}
+.chat-right-quote p{font-family:Georgia,serif;font-size:1.4rem;font-weight:900;color:#fff;}
+.chat-right-quote small{color:var(--muted);font-size:.8rem;}
+@media(max-width:768px){.chat-section{margin:0 1rem 1.5rem;}.chat-grid{grid-template-columns:1fr;}.chat-right{display:none;}.chat-left{padding:1.5rem;}}
+
+/* CARD ROWS */
+.row-section{margin-bottom:2rem;}
+.row-header{display:flex;align-items:center;gap:.5rem;padding:0 4rem;margin-bottom:.75rem;}
+.row-header h2{font-size:1.2rem;font-weight:700;cursor:pointer;transition:color .3s;}
+.row-header h2:hover{color:var(--muted);}
+.row-explore{font-size:.7rem;font-weight:700;letter-spacing:.2em;color:var(--green);opacity:0;transition:opacity .3s;}
+.row-section:hover .row-explore{opacity:1;}
+.row-wrap{position:relative;}
+.row-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 4rem;scroll-behavior:smooth;}
+.row-scroll::-webkit-scrollbar{display:none;}
+.row-chevron{position:absolute;top:0;bottom:0;width:48px;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,rgba(20,20,20,.9),transparent);border:none;color:#fff;font-size:1.5rem;cursor:pointer;z-index:10;opacity:0;transition:opacity .3s;}
+.row-chevron.left{left:0;background:linear-gradient(to right,rgba(20,20,20,.9),transparent);}
+.row-chevron.right{right:0;background:linear-gradient(to left,rgba(20,20,20,.9),transparent);}
+.row-section:hover .row-chevron{opacity:1;}
+@media(max-width:768px){.row-header{padding:0 1rem;}.row-scroll{padding:0 1rem;}}
+
+/* CARDS */
+.card{flex-shrink:0;width:220px;height:124px;border-radius:4px;overflow:hidden;position:relative;cursor:pointer;transition:transform .3s,z-index .3s;}
+.card:hover{transform:scale(1.08);z-index:20;}
+.card img{width:100%;height:100%;object-fit:cover;}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.6) 100%);transition:background .3s;}
+.card:hover .card-overlay{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.9) 100%);}
+.card-ep{position:absolute;top:6px;left:6px;color:#fff;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:3px;}
+.card-hover-info{position:absolute;bottom:0;left:0;right:0;padding:8px;opacity:0;transform:translateY(6px);transition:all .3s;}
+.card:hover .card-hover-info{opacity:1;transform:translateY(0);}
+.card-hover-title{font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-hover-sub{font-size:.7rem;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-hover-actions{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.card-action-btn{width:24px;height:24px;border-radius:50%;border:1px solid #aaa;background:none;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.65rem;cursor:pointer;transition:border-color .2s;}
+.card-action-btn.white{background:#fff;border-color:#fff;color:#000;}
+.card-action-btn:hover{border-color:#fff;}
+.card-mood{font-size:.65rem;color:var(--muted);margin-top:4px;}
+
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0;background:rgba(0,0,0,0);transition:background .3s;pointer-events:none;}
+#modal.open{background:rgba(0,0,0,.75);pointer-events:all;}
+.modal-box{width:100%;max-width:760px;background:#141414;border-radius:12px 12px 0 0;transform:translateY(100%);transition:transform .4s cubic-bezier(.23,1,.32,1);max-height:90vh;overflow-y:auto;}
+#modal.open .modal-box{transform:translateY(0);}
+.modal-img{position:relative;height:220px;}
+.modal-img img{width:100%;height:100%;object-fit:cover;}
+.modal-img-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,20,0) 40%,rgba(20,20,20,1) 100%);}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(20,20,20,.7);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+.modal-img-btns{position:absolute;bottom:12px;left:12px;display:flex;gap:.5rem;}
+.modal-body{padding:1rem 1.5rem 2rem;}
+.modal-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.8rem;color:#aaa;}
+.modal-match{color:var(--green);font-weight:700;}
+.modal-title{font-family:Georgia,serif;font-size:1.6rem;font-weight:400;margin-bottom:.75rem;}
+.modal-desc{color:#bbb;font-size:.9rem;line-height:1.7;}
+.modal-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;font-size:.7rem;color:#aaa;}
+.modal-tag{border:1px solid #333;padding:2px 8px;border-radius:4px;}
+@media(min-width:768px){#modal{align-items:center;padding:2rem;}.modal-box{border-radius:12px;}}
+
+/* BDAY ENDING */
+.bday-ending{margin:3rem 4rem;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#120008 0%,#0a0a14 50%,#001008 100%);border:1px solid rgba(232,99,122,.2);}
+.bday-ending-inner{padding:3rem 4rem;max-width:680px;margin:0 auto;text-align:center;}
+.ending-label{font-size:.65rem;letter-spacing:.4em;text-transform:uppercase;color:var(--red);margin-bottom:1.2rem;display:block;}
+.ending-title{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:400;font-style:italic;line-height:1.3;margin-bottom:2.5rem;}
+.ending-lines{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;text-align:left;}
+.ending-line{color:#bbb;font-size:.95rem;line-height:1.7;}
+.ending-line span{color:var(--red);}
+.ending-msg{color:#bbb;font-size:.95rem;line-height:1.9;margin-bottom:2rem;}
+.ending-msg strong{color:#fff;font-weight:500;}
+.surprise-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--red),#c2185b);color:#fff;border:none;padding:.8rem 2rem;border-radius:100px;font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:transform .3s,box-shadow .3s;box-shadow:0 0 30px rgba(229,9,20,.3);}
+.surprise-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(229,9,20,.5);}
+.surprise-reveal{margin-top:1.5rem;padding:2rem;border-radius:16px;background:rgba(229,9,20,.08);border:1px solid rgba(229,9,20,.3);display:none;animation:fadeUp .6s ease both;}
+.surprise-reveal.show{display:block;}
+.surprise-emoji{font-size:3rem;margin-bottom:1rem;}
+.surprise-msg-title{font-family:Georgia,serif;font-size:1.5rem;font-style:italic;font-weight:400;margin-bottom:1rem;}
+.surprise-msg-body{color:#bbb;line-height:1.9;font-size:.9rem;max-width:400px;margin:0 auto;}
+.surprise-photo{width:160px;height:160px;object-fit:cover;border-radius:50%;border:2px solid var(--red);box-shadow:0 0 50px rgba(229,9,20,.45);margin:1.5rem auto 0;display:block;}
+@media(max-width:768px){.bday-ending{margin:2rem 1rem;}.bday-ending-inner{padding:2rem 1.5rem;}}
+
+/* QUOTES */
+.quotes-section{margin:3rem 4rem;border-radius:12px;padding:4rem 2rem;text-align:center;background:#0a0a0a;border:1px solid rgba(255,255,255,.04);position:relative;overflow:hidden;}
+.quotes-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,var(--red),transparent 70%);opacity:.08;pointer-events:none;}
+.quote-line{font-family:Georgia,serif;font-size:clamp(1.1rem,3vw,2rem);font-weight:300;font-style:italic;color:#bbb;margin-bottom:1rem;position:relative;z-index:1;}
+@media(max-width:768px){.quotes-section{margin:2rem 1rem;}}
+
+/* CREDITS */
+.credits{padding:5rem 4rem;text-align:center;}
+.credits-badge{display:inline-block;font-size:.65rem;letter-spacing:.5em;text-transform:uppercase;color:var(--red);border:1px solid var(--red);padding:.3rem .9rem;margin-bottom:2rem;}
+.credits-list{display:flex;flex-direction:column;gap:.5rem;color:#555;font-size:.85rem;margin-bottom:4rem;}
+.credits-title{font-family:Georgia,serif;font-size:clamp(2rem,6vw,4rem);font-weight:900;color:#fff;text-shadow:0 0 60px rgba(229,9,20,.3);}
+.credits-sub{color:#555;margin-top:1rem;font-size:.85rem;}
+@media(max-width:768px){.credits{padding:3rem 1.5rem;}}
+
+/* FADE IN ON SCROLL */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">SJ&GK</div>
+  <div class="loader-dots">
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+    <div class="loader-dot"></div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="intro-inner">
+    <div class="intro-line" id="introLine"></div>
+    <div class="intro-title" id="introTitle">SJ & GK</div>
+    <div class="intro-sub" id="introSub">An Original Love Story</div>
+    <div class="intro-bday" id="introBday">🎂 Happy Birthday GK ✨</div>
+  </div>
+  <button id="skip-btn" onclick="skipIntro()">⏭ Skip Intro</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SJ&GK</div>
+  <div class="nav-links">
+    <span>Home</span>
+    <span>Our Story</span>
+    <span>Milestones</span>
+    <span>New & Upcoming</span>
+  </div>
+  <div class="nav-right">
+    <span style="color:#aaa;cursor:pointer;font-size:1.1rem;">♥</span>
+    <div class="nav-avatar">S</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <img src="Image6.jpg" alt="I Love You" id="heroBg"/>
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-bday-badge">🎂 Happy Birthday GK ✨</div>
+    <div class="hero-n"><span>N</span> Original Series</div>
+    <h1 class="hero-title">SJ & GK</h1>
+    <div class="hero-meta">
+      <span class="hero-match">99% Match</span>
+      <span class="hero-badge-a">A</span>
+      <span>2025 – Present</span>
+      <span>20 Memories</span>
+      <span class="hero-hd">HD</span>
+    </div>
+    <p class="hero-desc">A cinematic timeline of memories, milestones, chaos, love, dreams, and everything in between. Science brought them together. Love kept them there.</p>
+    <div class="hero-btns">
+      <button class="btn-play">▶ Play</button>
+      <button class="btn-info" onclick="openModal(5)">ℹ More Info</button>
+      <button class="btn-mute" id="muteBtn" onclick="toggleMute()">🔇</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div id="content">
+
+  <!-- Birthday Strip -->
+  <div class="bday-strip fade-in">
+    <div class="emoji">🎂 ✨ 🎉 ✨ 🎂</div>
+    <h3>Happy Birthday, GK</h3>
+    <p>Of all the days in the year, this one belongs entirely to you.</p>
+  </div>
+
+  <!-- Late Night Chats -->
+  <div class="chat-section fade-in">
+    <div class="chat-grid">
+      <div class="chat-left">
+        <div class="chat-label"><span>♥</span> 2 AM · Every Night</div>
+        <h3>Late Night Chats</h3>
+        <p class="sub">The conversations nobody else knows about.</p>
+        <div class="chat-messages" id="chatMessages"></div>
+      </div>
+      <div class="chat-right">
+        <img src="Image3.jpg" alt="Late Nights"/>
+        <div class="chat-right-overlay"></div>
+        <div class="chat-right-quote">
+          <p>"You first."</p>
+          <small>— Her, every night</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Rows -->
+  <div id="rows"></div>
+
+  <!-- Birthday Ending -->
+  <div class="bday-ending fade-in">
+    <div class="bday-ending-inner">
+      <span class="ending-label">A message from me, to you</span>
+      <h2 class="ending-title">You are the best thing<br/>that happened to me.</h2>
+      <div class="ending-lines" id="endingLines"></div>
+      <p class="ending-msg">On your birthday, I just want you to know one thing —<br/><strong>choosing you, every single day, is the easiest decision I make.</strong></p>
+      <button class="surprise-btn" onclick="revealSurprise()">🎁 Open Your Surprise</button>
+      <div class="surprise-reveal" id="surpriseReveal">
+        <div class="surprise-emoji">🥺❤️</div>
+        <p class="surprise-msg-title">Happy Birthday, GK.</p>
+        <p class="surprise-msg-body">This is not just a website.<br/>This is every moment I never want to forget,<br/>every memory I am proud of,<br/>every reason I fall more in love with you.<br/><br/><strong style="color:#fff;">It's always going to be us. ❤️</strong></p>
+        <img src="finalimage.png" alt="Us" class="surprise-photo"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quotes -->
+  <div class="quotes-section fade-in">
+    <div class="quotes-glow"></div>
+    <p class="quote-line">"She became his peace."</p>
+    <p class="quote-line">"Science brought them together."</p>
+    <p class="quote-line">"They didn't just fall in love. They built things together."</p>
+  </div>
+
+  <!-- Credits -->
+  <div class="credits">
+    <div class="credits-badge">N Original</div>
+    <div class="credits-list">
+      <span>Directed by Love</span>
+      <span>Written by Fate</span>
+      <span>Research by SJ & GK</span>
+      <span>Starring Sujal & GK</span>
+      <span>Music by Late Night Conversations</span>
+    </div>
+    <h2 class="credits-title">To Be Continued...</h2>
+    <p class="credits-sub">More memories. More papers. More cities. More us.</p>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-img">
+      <img id="modalImg" src="" alt=""/>
+      <div class="modal-img-overlay"></div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      <div class="modal-img-btns">
+        <button class="btn-play" style="padding:.5rem 1.2rem;font-size:.85rem;">▶ Play</button>
+        <button class="card-action-btn" style="width:32px;height:32px;">+</button>
+        <button class="card-action-btn" style="width:32px;height:32px;">♥</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="modal-match">99% Match</span>
+        <span id="modalTitle2" style="color:#aaa;"></span>
+        <span id="modalDuration" style="border:1px solid #555;padding:0 4px;font-size:.7rem;"></span>
+        <span style="border:1px solid #555;padding:0 4px;font-size:.7rem;">HD</span>
+      </div>
+      <h2 class="modal-title" id="modalSubtitle"></h2>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+  </div>
+</div>
+
+<script>
 const timeline = [
-  { title: "October 2025", subtitle: "The First Hi", description: "The first 'Hi' from you never felt normal. Every message from you felt electrifying.", image: "Image1.jpg", genre: "Origin Story", mood: "Electric", duration: "∞" },
-  { title: "Diwali Hunt Game", subtitle: "10 Chances", description: "The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.", image: "Image2.jpg", genre: "Romance", mood: "Playful", duration: "1 night" },
-  { title: "Oct – Nov 2025", subtitle: "Sleepless Nights", description: "The girl who never stayed awake for anyone stayed awake entire nights talking to me.", image: "Image3.jpg", genre: "Drama", mood: "Tender", duration: "Weeks" },
-  { title: "The MEDHA Night", subtitle: "Trust", description: "The night you slowly started opening up to me. A trust I never want to break.", image: "Image4.jpg", genre: "Drama", mood: "Intimate", duration: "1 night" },
-  { title: "The Liking Phase", subtitle: "From Like to Love", description: "'I like you' slowly becoming 'I love you'.", image: "Image5.jpg", genre: "Romance", mood: "Warm", duration: "Weeks" },
-  { title: "4th December 2025", subtitle: "I Love You", description: "The first proper 'I love you'.", image: "Image6.jpg", genre: "Romance", mood: "Euphoric", duration: "Forever" },
-  { title: "12th January 2026", subtitle: "First Kiss", description: "Our first room meet. Our first kiss.", image: "Image7.jpg", genre: "Romance", mood: "Magical", duration: "1 afternoon" },
-  { title: "24th January 2026", subtitle: "ICRTB Conference", description: "My baby wins ICRTB conference. Proud of you beyond words.", image: "Image8.jpg", genre: "Achievement", mood: "Proud", duration: "1 day" },
-  { title: "26th January 2026", subtitle: "Crazy Cheesy Café", description: "Our first date at Crazy Cheesy Café.", image: "Image9.jpg", genre: "Romance", mood: "Butterflies", duration: "1 evening" },
-  { title: "31st January 2026", subtitle: "First Project Together", description: "Our first project together.", image: "Image10.jpg", genre: "Partnership", mood: "Focused", duration: "Days" },
-  { title: "5th February 2026", subtitle: "Book Chapter", description: "Our first book chapter together. One of the moments that made me realize how beautifully we grow together.", image: "Image11.png", genre: "Milestone", mood: "Growth", duration: "Weeks" },
-  { title: "13th February 2026", subtitle: "The Dress", description: "You wore a special dress for me and waited for me despite my late bus.", image: "Image12.jpg", genre: "Romance", mood: "Heart-melting", duration: "1 evening" },
-  { title: "20th February 2026", subtitle: "Testing Day", description: "First testing day together.", image: "Image13.jpg", genre: "Partnership", mood: "Together", duration: "1 day" },
-  { title: "Another Book Chapter", subtitle: "A Great Team", description: "Another milestone we created together — proof that we make a pretty great team.", image: "Image14.png", genre: "Milestone", mood: "Accomplished", duration: "Weeks" },
-  { title: "25th February 2026", subtitle: "Birthday Gift", description: "The handmade birthday gift you made for me. I still can't believe you made that with your hands.", image: "Image15.jpg", genre: "Love", mood: "Cherished", duration: "Forever" },
-  { title: "8th March 2026", subtitle: "Sea Girl", description: "My little sea girl.", image: "Image16.jpg", genre: "Romance", mood: "Free", duration: "1 day" },
-  { title: "2nd April 2026", subtitle: "Poha Date", description: "The poha date. The first time I cooked for you.", image: "Image17.jpg", genre: "Romance", mood: "Cozy", duration: "1 morning" },
-  { title: "15th April 2026", subtitle: "Mumbai Trip", description: "Our Mumbai trip. The train conversation changed me forever.", image: "Image18.jpg", genre: "Adventure", mood: "Life-changing", duration: "Days" },
-  { title: "Internship Arc", subtitle: "Dreams Coming True", description: "We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK got into JNU Delhi.", image: "Image19.jpg", genre: "Achievement", mood: "Victorious", duration: "Months" },
-  { title: "Coming Soon", subtitle: "SJ & GK Research Paper", description: "Soon we begin writing our first research paper together — the first official research story of SJ and GK.", image: "Image20.jpg", genre: "Future", mood: "Hopeful", duration: "∞" },
+  { title:"October 2025", subtitle:"The First Hi", description:"The first 'Hi' from you never felt normal. Every message from you felt electrifying.", image:"Image1.jpg", genre:"Origin Story", mood:"Electric", duration:"∞" },
+  { title:"Diwali Hunt Game", subtitle:"10 Chances", description:"The first game we played virtually. You gave me 10 chances to guess your address. I came close but still failed.", image:"Image2.jpg", genre:"Romance", mood:"Playful", duration:"1 night" },
+  { title:"Oct – Nov 2025", subtitle:"Sleepless Nights", description:"The girl who never stayed awake for anyone stayed awake entire nights talking to me.", image:"Image3.jpg", genre:"Drama", mood:"Tender", duration:"Weeks" },
+  { title:"The MEDHA Night", subtitle:"Trust", description:"The night you slowly started opening up to me. A trust I never want to break.", image:"Image4.jpg", genre:"Drama", mood:"Intimate", duration:"1 night" },
+  { title:"The Liking Phase", subtitle:"From Like to Love", description:"'I like you' slowly becoming 'I love you'.", image:"Image5.jpg", genre:"Romance", mood:"Warm", duration:"Weeks" },
+  { title:"4th December 2025", subtitle:"I Love You", description:"The first proper 'I love you'.", image:"Image6.jpg", genre:"Romance", mood:"Euphoric", duration:"Forever" },
+  { title:"12th January 2026", subtitle:"First Kiss", description:"Our first room meet. Our first kiss.", image:"Image7.jpg", genre:"Romance", mood:"Magical", duration:"1 afternoon" },
+  { title:"24th January 2026", subtitle:"ICRTB Conference", description:"My baby wins ICRTB conference. Proud of you beyond words.", image:"Image8.jpg", genre:"Achievement", mood:"Proud", duration:"1 day" },
+  { title:"26th January 2026", subtitle:"Crazy Cheesy Café", description:"Our first date at Crazy Cheesy Café.", image:"Image9.jpg", genre:"Romance", mood:"Butterflies", duration:"1 evening" },
+  { title:"31st January 2026", subtitle:"First Project Together", description:"Our first project together.", image:"Image10.jpg", genre:"Partnership", mood:"Focused", duration:"Days" },
+  { title:"5th February 2026", subtitle:"Book Chapter", description:"Our first book chapter together. One of the moments that made me realize how beautifully we grow together.", image:"Image11.png", genre:"Milestone", mood:"Growth", duration:"Weeks" },
+  { title:"13th February 2026", subtitle:"The Dress", description:"You wore a special dress for me and waited for me despite my late bus.", image:"Image12.jpg", genre:"Romance", mood:"Heart-melting", duration:"1 evening" },
+  { title:"20th February 2026", subtitle:"Testing Day", description:"First testing day together.", image:"Image13.jpg", genre:"Partnership", mood:"Together", duration:"1 day" },
+  { title:"Another Book Chapter", subtitle:"A Great Team", description:"Another milestone we created together — proof that we make a pretty great team.", image:"Image14.png", genre:"Milestone", mood:"Accomplished", duration:"Weeks" },
+  { title:"25th February 2026", subtitle:"Birthday Gift", description:"The handmade birthday gift you made for me. I still can't believe you made that with your hands.", image:"Image15.jpg", genre:"Love", mood:"Cherished", duration:"Forever" },
+  { title:"8th March 2026", subtitle:"Sea Girl", description:"My little sea girl.", image:"Image16.jpg", genre:"Romance", mood:"Free", duration:"1 day" },
+  { title:"2nd April 2026", subtitle:"Poha Date", description:"The poha date. The first time I cooked for you.", image:"Image17.jpg", genre:"Romance", mood:"Cozy", duration:"1 morning" },
+  { title:"15th April 2026", subtitle:"Mumbai Trip", description:"Our Mumbai trip. The train conversation changed me forever.", image:"Image18.jpg", genre:"Adventure", mood:"Life-changing", duration:"Days" },
+  { title:"Internship Arc", subtitle:"Dreams Coming True", description:"We started searching for internships in February 2026 and finally made it in April. Sujal got into IISc Bangalore and GK got into JNU Delhi.", image:"Image19.jpg", genre:"Achievement", mood:"Victorious", duration:"Months" },
+  { title:"Coming Soon", subtitle:"SJ & GK Research Paper", description:"Soon we begin writing our first research paper together — the first official research story of SJ and GK.", image:"Image20.jpg", genre:"Future", mood:"Hopeful", duration:"∞" },
 ];
 
 const GENRE_COLORS = {
-  "Origin Story": "#e50914", Romance: "#e50914", Drama: "#b91c1c",
-  Achievement: "#ca8a04", Partnership: "#15803d", Milestone: "#7c3aed",
-  Love: "#db2777", Adventure: "#0891b2", Future: "#6366f1",
+  "Origin Story":"#e50914", Romance:"#e50914", Drama:"#b91c1c",
+  Achievement:"#ca8a04", Partnership:"#15803d", Milestone:"#7c3aed",
+  Love:"#db2777", Adventure:"#0891b2", Future:"#6366f1"
 };
 
 const chats = [
-  { who: "him", text: "Phir meri photo 📸", time: "2:14 AM" },
-  { who: "her", text: "Haa haa bhejti hu sone de pahele sabko 😌", time: "2:15 AM" },
-  { who: "him", text: "Yayyyyyyyy 🥹", time: "2:15 AM" },
-  { who: "her", text: "awwww mu cutieee 🥺❤️", time: "2:16 AM" },
-  { who: "him", text: "Reached home?", time: "11:48 PM" },
-  { who: "her", text: "No, still talking to you.", time: "11:49 PM" },
-  { who: "him", text: "Sleep now.", time: "11:50 PM" },
-  { who: "her", text: "You first. 🙃", time: "11:50 PM" },
+  { who:"him", text:"Phir meri photo 📸", time:"2:14 AM" },
+  { who:"her", text:"Haa haa bhejti hu sone de pahele sabko 😌", time:"2:15 AM" },
+  { who:"him", text:"Yayyyyyyyy 🥹", time:"2:15 AM" },
+  { who:"her", text:"awwww mu cutieee 🥺❤️", time:"2:16 AM" },
+  { who:"him", text:"Reached home?", time:"11:48 PM" },
+  { who:"her", text:"No, still talking to you.", time:"11:49 PM" },
+  { who:"him", text:"Sleep now.", time:"11:50 PM" },
+  { who:"her", text:"You first. 🙃", time:"11:50 PM" },
 ];
 
-function MatchScore() {
-  return <span style={{ color: "#46d369" }} className="font-bold text-sm">99% Match</span>;
-}
+const endingLines = [
+  "You stayed up when you didn't have to.",
+  "You waited even when the bus was late.",
+  "You made something with your hands just for me.",
+  "You opened up when it was hard.",
+  "You grew with me — in labs, in papers, in life.",
+];
 
-function NetflixBadge({ label }) {
-  return <span className="border border-gray-400 px-1 text-xs text-gray-300 font-bold tracking-wider">{label}</span>;
-}
+const rows = [
+  { title:"Because You Love Romance", filter: t => t.genre === "Romance" },
+  { title:"Continue Watching Our Story", filter: (t,i) => i >= 10 && i <= 16 },
+  { title:"Milestones & Achievements", filter: t => ["Milestone","Achievement"].includes(t.genre) },
+  { title:"All Episodes — SJ & GK", filter: () => true },
+];
 
-function HeroSection({ item, onInfo }) {
-  const [muted, setMuted] = useState(true);
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
-
-  return (
-    <motion.section ref={heroRef} className="relative w-full overflow-hidden" style={{ height: "95vh" }}>
-      <motion.div className="absolute inset-0" style={{ y }}>
-        <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" style={{ filter: "brightness(0.5)" }} />
-      </motion.div>
-      <div className="absolute inset-0" style={{ background: "linear-gradient(77deg,rgba(0,0,0,.8) 0,rgba(0,0,0,0) 85%),linear-gradient(180deg,rgba(20,20,20,0) 0,rgba(20,20,20,.15) 20%,rgba(20,20,20,.35) 40%,rgba(20,20,20,.58) 55%,rgba(20,20,20,.78) 69%,rgba(20,20,20,.97) 90%)" }} />
-      <motion.div className="absolute bottom-0 left-0 right-0 px-4 md:px-16 pb-16 md:pb-28" style={{ opacity }}>
-        {/* Birthday badge */}
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase"
-          style={{ background: "rgba(232,99,122,0.2)", border: "1px solid rgba(232,99,122,0.5)", color: "#f8a4b4" }}>
-          🎂 Happy Birthday GK ✨
-        </motion.div>
-        <motion.div className="flex items-center gap-2 mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <span className="text-xs font-bold tracking-[0.3em] text-gray-300 uppercase">
-            <span style={{ color: "#e50914", fontSize: "1.1em", fontWeight: 900 }}>N</span> Original Series
-          </span>
-        </motion.div>
-        <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-          className="text-white font-black leading-none mb-4"
-          style={{ fontSize: "clamp(3rem,8vw,7rem)", textShadow: "2px 2px 4px rgba(0,0,0,.45)", fontFamily: "'Georgia',serif", letterSpacing: "-0.02em" }}>
-          SJ & GK
-        </motion.h1>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-          className="flex items-center gap-3 mb-4 flex-wrap">
-          <MatchScore />
-          <NetflixBadge label="A" />
-          <span className="text-gray-300 text-sm">2025 – Present</span>
-          <span className="text-gray-300 text-sm">20 Memories</span>
-          <span className="border border-gray-500 text-gray-300 text-xs px-1.5 py-0.5">HD</span>
-        </motion.div>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-          className="text-gray-200 mb-6 max-w-md leading-relaxed text-sm md:text-base">
-          A cinematic timeline of memories, milestones, chaos, love, dreams, and everything in between. 
-          Science brought them together. Love kept them there.
-        </motion.p>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-          className="flex items-center gap-3 flex-wrap">
-          <button className="flex items-center gap-2 px-6 py-2.5 rounded font-bold text-black text-base transition-all hover:bg-white/80 active:scale-95"
-            style={{ background: "white" }}>
-            <Play size={20} fill="black" /> Play
-          </button>
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded font-semibold text-white text-base transition-all hover:bg-white/20 active:scale-95"
-            style={{ background: "rgba(109,109,110,0.7)" }} onClick={() => onInfo(5)}>
-            <Info size={20} /> More Info
-          </button>
-          <button className="ml-2 p-2.5 rounded-full border-2 border-gray-400 text-white transition hover:border-white"
-            onClick={() => setMuted(m => !m)}>
-            {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
-        </motion.div>
-      </motion.div>
-    </motion.section>
-  );
-}
-
-function NetflixCard({ item, index, onSelect }) {
-  const [hovered, setHovered] = useState(false);
-  const color = GENRE_COLORS[item.genre] || "#e50914";
-  return (
-    <motion.div
-      className="relative flex-shrink-0 cursor-pointer rounded overflow-hidden"
-      style={{ width: 220, height: 124 }}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      animate={hovered ? { scale: 1.08, zIndex: 30 } : { scale: 1, zIndex: 1 }}
-      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      onClick={() => onSelect(index)}
-    >
-      <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" />
-      <div className="absolute inset-0" style={{ background: hovered ? "linear-gradient(180deg,transparent 40%,rgba(0,0,0,.9) 100%)" : "linear-gradient(180deg,transparent 50%,rgba(0,0,0,.6) 100%)" }} />
-      <div className="absolute top-1.5 left-1.5 text-white text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: color }}>
-        E{String(index + 1).padStart(2, "0")}
-      </div>
-      {hovered && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-0 left-0 right-0 p-2">
-          <p className="text-white font-bold text-sm leading-tight truncate">{item.subtitle}</p>
-          <p className="text-gray-300 text-xs truncate">{item.title}</p>
-          <div className="flex items-center gap-2 mt-1.5">
-            <button className="rounded-full bg-white p-1"><Play size={10} fill="black" color="black" /></button>
-            <button className="rounded-full border border-gray-400 p-1"><Plus size={10} color="white" /></button>
-            <button className="rounded-full border border-gray-400 p-1"><ThumbsUp size={10} color="white" /></button>
-          </div>
-          <div className="flex items-center gap-2 mt-1.5">
-            <MatchScore />
-            <span className="text-xs text-gray-400">{item.mood}</span>
-          </div>
-        </motion.div>
-      )}
-    </motion.div>
-  );
-}
-
-function CardRow({ title, items, onSelect, icon: Icon, startIndex = 0 }) {
-  const rowRef = useRef(null);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(true);
-  const scroll = (dir) => rowRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
-  const onScroll = useCallback(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    setCanLeft(el.scrollLeft > 10);
-    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
-  }, []);
-  return (
-    <div className="mb-8 group/row">
-      <div className="flex items-center gap-3 px-4 md:px-16 mb-3">
-        {Icon && <Icon size={18} style={{ color: "#e50914" }} />}
-        <h2 className="text-white font-bold text-xl tracking-tight">{title}</h2>
-        <span className="text-xs font-bold tracking-widest opacity-0 group-hover/row:opacity-100 transition" style={{ color: "#46d369" }}>Explore All</span>
-      </div>
-      <div className="relative">
-        {canLeft && (
-          <button onClick={() => scroll(-1)} className="absolute left-0 top-0 bottom-0 z-20 w-12 flex items-center justify-center text-white opacity-0 group-hover/row:opacity-100 transition" style={{ background: "linear-gradient(to right,rgba(20,20,20,.9),transparent)" }}>
-            <ChevronLeft size={28} />
-          </button>
-        )}
-        {canRight && (
-          <button onClick={() => scroll(1)} className="absolute right-0 top-0 bottom-0 z-20 w-12 flex items-center justify-center text-white opacity-0 group-hover/row:opacity-100 transition" style={{ background: "linear-gradient(to left,rgba(20,20,20,.9),transparent)" }}>
-            <ChevronRight size={28} />
-          </button>
-        )}
-        <div ref={rowRef} onScroll={onScroll} className="flex gap-2 overflow-x-auto px-4 md:px-16" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-          {items.map((item, i) => (
-            <NetflixCard key={i} item={item} index={startIndex + i} onSelect={onSelect} />
-          ))}
-        </div>
-      </div>
+/* ---- BUILD CHATS ---- */
+const chatEl = document.getElementById('chatMessages');
+chats.forEach(c => {
+  chatEl.innerHTML += `<div class="chat-msg ${c.who}">
+    <div class="bubble ${c.who}">
+      ${c.text}
+      <span class="bubble-time">${c.time}</span>
     </div>
-  );
-}
+  </div>`;
+});
 
-function ModalCard({ item, index, onClose }) {
-  if (!item) return null;
-  const color = GENRE_COLORS[item.genre] || "#e50914";
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-8"
-      style={{ background: "rgba(0,0,0,0.75)" }} onClick={onClose}>
-      <motion.div initial={{ y: 80, scale: 0.95 }} animate={{ y: 0, scale: 1 }} exit={{ y: 80, scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="relative w-full md:max-w-3xl overflow-hidden rounded-t-2xl md:rounded-2xl"
-        style={{ background: "#141414", maxHeight: "90vh", overflowY: "auto" }}
-        onClick={e => e.stopPropagation()}>
-        <div className="relative h-56 md:h-72">
-          <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(20,20,20,0) 40%,rgba(20,20,20,1) 100%)" }} />
-          <button onClick={onClose} className="absolute top-4 right-4 rounded-full p-2 text-white" style={{ background: "rgba(20,20,20,0.7)" }}>
-            <X size={18} />
-          </button>
-          <div className="absolute bottom-4 left-4 flex items-center gap-3">
-            <button className="flex items-center gap-2 px-5 py-2 rounded font-bold text-black text-sm" style={{ background: "white" }}>
-              <Play size={16} fill="black" /> Play
-            </button>
-            <button className="rounded-full border-2 border-gray-400 p-2"><Plus size={16} color="white" /></button>
-            <button className="rounded-full border-2 border-gray-400 p-2"><Heart size={16} color="white" /></button>
-          </div>
-        </div>
-        <div className="px-6 pb-8 pt-2">
-          <div className="flex items-center gap-3 mb-2 flex-wrap">
-            <MatchScore />
-            <span className="text-gray-400 text-sm">{item.title}</span>
-            <span className="border border-gray-500 text-xs text-gray-300 px-1">{item.duration}</span>
-            <span className="border border-gray-500 text-xs text-gray-300 px-1">HD</span>
-          </div>
-          <h2 className="text-white text-2xl font-black mb-3" style={{ fontFamily: "'Georgia',serif" }}>{item.subtitle}</h2>
-          <p className="text-gray-300 leading-relaxed text-sm">{item.description}</p>
-          <div className="mt-5 flex flex-wrap gap-2 text-xs text-gray-400">
-            <span>Genre: <span className="text-white" style={{ color }}>{item.genre}</span></span>
-            <span className="text-gray-600">|</span>
-            <span>Mood: <span className="text-white">{item.mood}</span></span>
-            <span className="text-gray-600">|</span>
-            <span>Episode: <span className="text-white">{index + 1} of {timeline.length}</span></span>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
+/* ---- BUILD ENDING LINES ---- */
+const elEl = document.getElementById('endingLines');
+endingLines.forEach(l => {
+  elEl.innerHTML += `<p class="ending-line"><span>✦</span> ${l}</p>`;
+});
 
-/* ── SWEET BIRTHDAY ENDING ── */
-function BirthdayEnding() {
-  const [revealed, setRevealed] = useState(false);
-  const lines = [
-    "You stayed up when you didn't have to.",
-    "You waited even when the bus was late.",
-    "You made something with your hands just for me.",
-    "You opened up when it was hard.",
-    "You grew with me — in labs, in papers, in life.",
-  ];
-  return (
-    <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}
-      className="mx-4 md:mx-16 my-14 rounded-2xl overflow-hidden"
-      style={{ background: "linear-gradient(160deg,#120008 0%,#0a0a14 50%,#001008 100%)", border: "1px solid rgba(232,99,122,0.2)" }}>
-      <div className="p-10 md:p-16 max-w-2xl mx-auto text-center">
-
-        <motion.p className="text-xs uppercase tracking-[0.4em] mb-5" style={{ color: "#e50914" }}
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          A message from me, to you
-        </motion.p>
-
-        <motion.h3 className="text-4xl md:text-5xl font-black mb-10 text-white leading-tight"
-          style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-          You are the best thing<br/>that happened to me.
-        </motion.h3>
-
-        <div className="space-y-4 mb-10">
-          {lines.map((line, i) => (
-            <motion.p key={i} className="text-gray-300 text-base leading-relaxed"
-              initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * i, duration: 0.6 }} viewport={{ once: true }}>
-              <span style={{ color: "#e50914" }}>✦</span> {line}
-            </motion.p>
-          ))}
-        </div>
-
-        <motion.p className="text-gray-300 text-base leading-loose mb-8"
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.6 }} viewport={{ once: true }}>
-          On your birthday, I just want you to know one thing —<br/>
-          <span className="text-white font-semibold">choosing you, every single day, is the easiest decision I make.</span>
-        </motion.p>
-
-        {/* Surprise button */}
-        {!revealed ? (
-          <motion.button onClick={() => setRevealed(true)}
-            whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 rounded-full font-bold text-white text-sm tracking-widest uppercase transition-all"
-            style={{ background: "linear-gradient(135deg,#e50914,#c2185b)", boxShadow: "0 0 40px rgba(229,9,20,0.4)" }}
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.8 }}>
-            🎁 Open Your Surprise
-          </motion.button>
-        ) : (
-          <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 200 }}
-            className="mt-4 rounded-2xl p-8 text-center"
-            style={{ background: "rgba(229,9,20,0.08)", border: "1px solid rgba(229,9,20,0.3)" }}>
-            <div className="text-5xl mb-4">🥺❤️</div>
-            <p className="text-white text-xl font-black mb-3" style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}>
-              Happy Birthday, GK.
-            </p>
-            <p className="text-gray-300 leading-loose text-sm max-w-sm mx-auto">
-              This is not just a website.<br/>
-              This is every moment I never want to forget,<br/>
-              every memory I am proud of,<br/>
-              every reason I fall more in love with you.<br/><br/>
-              <span className="text-white font-semibold">It's always going to be us. ❤️</span>
-            </p>
-            <img src="finalimage.png" alt="Us" className="w-40 h-40 object-cover rounded-full mx-auto mt-6"
-              style={{ border: "2px solid #e50914", boxShadow: "0 0 50px rgba(229,9,20,0.45)" }} />
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
-
-export default function NetflixLoveStory() {
-  const [showLoader, setShowLoader] = useState(true);
-  const [showIntro, setShowIntro] = useState(true);
-  const [activeCard, setActiveCard] = useState(null);
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setShowLoader(false), 2400);
-    const t2 = setTimeout(() => setShowIntro(false), 5500);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
-
-  const romanceItems = timeline.filter(t => t.genre === "Romance");
-  const romanceIndexes = timeline.map((t, i) => t.genre === "Romance" ? i : -1).filter(i => i >= 0);
-  const milestoneItems = timeline.filter(t => ["Milestone", "Achievement"].includes(t.genre));
-  const milestoneIndexes = timeline.map((t, i) => ["Milestone", "Achievement"].includes(t.genre) ? i : -1).filter(i => i >= 0);
-
-  if (showLoader) {
-    return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ background: "#141414" }}>
-        <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6 }}>
-          <div className="text-5xl font-black" style={{ color: "#e50914", fontFamily: "Arial Black, sans-serif", letterSpacing: "-2px" }}>SJ&GK</div>
-        </motion.div>
-        <motion.div className="mt-12 flex gap-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-          {[0,1,2].map(i => (
-            <motion.div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#e50914" }}
-              animate={{ scale: [1,1.5,1], opacity: [0.4,1,0.4] }}
-              transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2 }} />
-          ))}
-        </motion.div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative min-h-screen font-sans text-white" style={{ background: "#141414" }}>
-
-      {/* Intro */}
-      <AnimatePresence>
-        {showIntro && (
-          <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}
-            className="fixed inset-0 z-[150] flex items-center justify-center" style={{ background: "#000" }}>
-            <div className="text-center">
-              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.8, ease: [0.23,1,0.32,1] }}
-                className="mx-auto mb-6" style={{ width: 240, height: 4, background: "#e50914", transformOrigin: "left" }} />
-              <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.8 }}
-                className="text-5xl md:text-7xl font-black text-white tracking-tight" style={{ fontFamily: "'Georgia',serif" }}>
-                SJ & GK
-              </motion.h1>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
-                className="mt-3 tracking-[0.4em] text-xs uppercase text-gray-400">An Original Love Story</motion.p>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}
-                className="mt-2 text-sm" style={{ color: "#f8a4b4" }}>🎂 Happy Birthday GK ✨</motion.p>
-            </div>
-            <button onClick={() => setShowIntro(false)} className="absolute right-8 top-8 flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-              <SkipForward size={14} /> Skip Intro
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 md:px-16 py-4"
-        style={{ background: "linear-gradient(180deg,rgba(20,20,20,0.9) 0%,transparent 100%)" }}>
-        <div className="flex items-center gap-8">
-          <span className="text-2xl font-black tracking-tight" style={{ color: "#e50914", fontFamily: "Arial Black,sans-serif", letterSpacing: "-1px" }}>SJ&GK</span>
-          <div className="hidden md:flex items-center gap-6 text-sm text-gray-300">
-            <span className="text-white font-semibold cursor-pointer">Home</span>
-            <span className="cursor-pointer hover:text-white transition">Our Story</span>
-            <span className="cursor-pointer hover:text-white transition">Milestones</span>
-            <span className="cursor-pointer hover:text-white transition">New & Upcoming</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Heart size={20} className="cursor-pointer hover:text-red-500 transition" />
-          <div className="w-8 h-8 rounded text-white font-bold text-sm flex items-center justify-center cursor-pointer" style={{ background: "#e50914" }}>S</div>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <HeroSection item={timeline[5]} onInfo={setActiveCard} />
-
-      {/* Content */}
-      <div className="relative z-10 -mt-16 pb-24" style={{ background: "#141414" }}>
-
-        {/* Birthday strip */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="mx-4 md:mx-16 mb-8 rounded-xl px-8 py-5 text-center"
-          style={{ background: "linear-gradient(135deg,rgba(232,99,122,0.12),rgba(201,169,110,0.08))", border: "1px solid rgba(232,99,122,0.2)" }}>
-          <p className="text-2xl mb-1">🎂 ✨ 🎉 ✨ 🎂</p>
-          <p className="font-black text-xl text-white" style={{ fontFamily: "'Georgia',serif", fontStyle: "italic" }}>Happy Birthday, GK</p>
-          <p className="text-gray-400 text-sm mt-1">Of all the days in the year, this one belongs entirely to you.</p>
-        </motion.div>
-
-        {/* Late night chats */}
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
-          className="mx-4 md:mx-16 mb-10 rounded-xl overflow-hidden"
-          style={{ background: "linear-gradient(135deg,#1a0000 0%,#141414 50%,#001a05 100%)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="grid md:grid-cols-2 gap-0">
-            <div className="p-8 md:p-10">
-              <div className="flex items-center gap-2 mb-6">
-                <MessageCircleHeart size={20} style={{ color: "#e50914" }} />
-                <span className="text-xs uppercase tracking-[0.3em] text-gray-400">2 AM · Every Night</span>
-              </div>
-              <h3 className="text-3xl font-black mb-2 text-white" style={{ fontFamily: "'Georgia',serif" }}>Late Night Chats</h3>
-              <p className="text-gray-400 text-sm mb-8">The conversations nobody else knows about.</p>
-              <div className="space-y-3">
-                {chats.map((c, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: c.who === "him" ? 20 : -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}
-                    className={`flex ${c.who === "him" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${c.who === "him" ? "rounded-br-sm text-white" : "rounded-bl-sm text-gray-200"}`}
-                      style={c.who === "him" ? { background: "#e50914" } : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                      <p>{c.text}</p>
-                      <p className="text-[10px] mt-1 opacity-40 text-right">{c.time}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            <div className="hidden md:block relative">
-              <img src="Image3.jpg" alt="late nights" className="w-full h-full object-cover" style={{ minHeight: 420 }} />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to right,#141414 0%,transparent 30%)" }} />
-              <div className="absolute bottom-6 left-6">
-                <p className="text-white font-black text-2xl" style={{ fontFamily: "'Georgia',serif" }}>"You first."</p>
-                <p className="text-gray-400 text-sm mt-1">— Her, every night</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Rows */}
-        <CardRow title="Because You Love Romance" items={romanceItems} onSelect={i => setActiveCard(romanceIndexes[i])} icon={Heart} />
-        <CardRow title="Continue Watching Our Story" items={timeline.slice(10, 17)} onSelect={i => setActiveCard(i + 10)} icon={Play} startIndex={10} />
-        <CardRow title="Milestones & Achievements" items={milestoneItems} onSelect={i => setActiveCard(milestoneIndexes[i])} icon={Star} />
-        <CardRow title="All Episodes — SJ & GK" items={timeline} onSelect={setActiveCard} icon={Sparkles} />
-
-        {/* Sweet birthday ending */}
-        <BirthdayEnding />
-
-        {/* Quotes */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="mx-4 md:mx-16 my-12 py-16 text-center relative overflow-hidden rounded-xl"
-          style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.04)" }}>
-          <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 50% 50%,#e50914,transparent 70%)" }} />
-          {["She became his peace.", "Science brought them together.", "They didn't just fall in love. They built things together."].map((q, i) => (
-            <motion.p key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.2 }} viewport={{ once: true }}
-              className="text-gray-300 text-xl md:text-3xl font-light italic mb-4 relative z-10"
-              style={{ fontFamily: "'Georgia',serif" }}>
-              "{q}"
-            </motion.p>
-          ))}
-        </motion.div>
-
-        {/* Credits */}
-        <div className="px-4 md:px-16 py-16 text-center">
-          <div className="inline-block text-xs uppercase tracking-[0.5em] px-3 py-1 mb-6" style={{ color: "#e50914", border: "1px solid #e50914" }}>N Original</div>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="space-y-2 text-gray-500 text-sm mb-16">
-            {["Directed by Love", "Written by Fate", "Research by SJ & GK", "Starring Sujal & GK", "Music by Late Night Conversations"].map((c, i) => (
-              <motion.p key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>{c}</motion.p>
-            ))}
-          </motion.div>
-          <motion.h2 initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-black text-white" style={{ fontFamily: "'Georgia',serif", textShadow: "0 0 60px rgba(229,9,20,0.3)" }}>
-            To Be Continued...
-          </motion.h2>
-          <p className="text-gray-500 mt-4 text-sm">More memories. More papers. More cities. More us.</p>
-        </div>
-      </div>
-
-      {/* Episode modal */}
-      <AnimatePresence>
-        {activeCard !== null && (
-          <ModalCard item={timeline[activeCard]} index={activeCard} onClose={() => setActiveCard(null)} />
-        )}
-      </AnimatePresence>
-
-      <style>{`.scrollbar-hide::-webkit-scrollbar{display:none;} [style*="scrollbarWidth"]::-webkit-scrollbar{display:none;}`}</style>
+/* ---- BUILD CARD ROWS ---- */
+const rowsEl = document.getElementById('rows');
+rows.forEach(row => {
+  const items = timeline.map((t,i) => ({...t, idx:i})).filter((t,i) => row.filter(t,i));
+  const id = 'row_' + Math.random().toString(36).slice(2);
+  rowsEl.innerHTML += `
+  <div class="row-section">
+    <div class="row-header">
+      <h2>${row.title}</h2>
+      <span class="row-explore">Explore All ›</span>
     </div>
-  );
+    <div class="row-wrap">
+      <button class="row-chevron left" onclick="scrollRow('${id}',-1)">‹</button>
+      <div class="row-scroll" id="${id}">
+        ${items.map(item => `
+          <div class="card" onclick="openModal(${item.idx})">
+            <img src="${item.image}" alt="${item.subtitle}" loading="lazy"/>
+            <div class="card-overlay"></div>
+            <div class="card-ep" style="background:${GENRE_COLORS[item.genre]||'#e50914'}">E${String(item.idx+1).padStart(2,'0')}</div>
+            <div class="card-hover-info">
+              <div class="card-hover-title">${item.subtitle}</div>
+              <div class="card-hover-sub">${item.title}</div>
+              <div class="card-hover-actions">
+                <button class="card-action-btn white">▶</button>
+                <button class="card-action-btn">+</button>
+                <button class="card-action-btn">♥</button>
+              </div>
+              <div class="card-mood"><span style="color:#46d369;font-weight:700;">99% Match</span> · ${item.mood}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="row-chevron right" onclick="scrollRow('${id}',1)">›</button>
+    </div>
+  </div>`;
+});
+
+function scrollRow(id, dir) {
+  document.getElementById(id).scrollBy({ left: dir * 320, behavior: 'smooth' });
 }
+
+/* ---- MODAL ---- */
+function openModal(idx) {
+  const item = timeline[idx];
+  document.getElementById('modalImg').src = item.image;
+  document.getElementById('modalTitle2').textContent = item.title;
+  document.getElementById('modalDuration').textContent = item.duration;
+  document.getElementById('modalSubtitle').textContent = item.subtitle;
+  document.getElementById('modalDesc').textContent = item.description;
+  document.getElementById('modalTags').innerHTML =
+    `<span class="modal-tag" style="color:${GENRE_COLORS[item.genre]||'#e50914'}">${item.genre}</span>
+     <span class="modal-tag">${item.mood}</span>
+     <span class="modal-tag">Episode ${idx+1} of 20</span>`;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) { if(e.target === document.getElementById('modal')) closeModalBtn(); }
+function closeModalBtn() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ---- SURPRISE ---- */
+function revealSurprise() {
+  const el = document.getElementById('surpriseReveal');
+  el.classList.add('show');
+  document.querySelector('.surprise-btn').style.display = 'none';
+}
+
+/* ---- MUTE ---- */
+let muted = true;
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
+}
+
+/* ---- LOADER ---- */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    setTimeout(() => document.getElementById('loader').remove(), 900);
+    // start intro
+    setTimeout(() => document.getElementById('introLine').classList.add('grow'), 100);
+    setTimeout(() => document.getElementById('introTitle').classList.add('show'), 900);
+    setTimeout(() => document.getElementById('introSub').classList.add('show'), 1900);
+    setTimeout(() => document.getElementById('introBday').classList.add('show'), 2500);
+    setTimeout(() => skipIntro(), 5500);
+  }, 2200);
+});
+
+function skipIntro() {
+  document.getElementById('intro').classList.add('hide');
+  setTimeout(() => { const el = document.getElementById('intro'); if(el) el.remove(); }, 1100);
+}
+
+/* ---- SCROLL FADE IN ---- */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+/* ---- HERO PARALLAX ---- */
+window.addEventListener('scroll', () => {
+  const bg = document.getElementById('heroBg');
+  if(bg) bg.style.transform = `scale(1.05) translateY(${window.scrollY * 0.3}px)`;
+});
+</script>
+</body>
+</html>
